@@ -11,21 +11,22 @@ redirect_from:
 
 Education
 ======
-* B.S. in GitHub, GitHub University, 2012
-* M.S. in Jekyll, GitHub University, 2014
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
+* Ph.D candidate in Computer Science, [University of Campinas](https://www.ic.unicamp.br/), 2016-Today
+* MSc in Computer Science, [University of Campinas](https://www.ic.unicamp.br/), 2014-2016
+* BSc in Applied and Computational Mathematics, [University of Campinas](https://www.ime.unicamp.br/), 2008-2013
 
 Work experience
-======
-* Summer 2015: Research Assistant
-  * Github University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
-
-* Fall 2015: Research Assistant
-  * Github University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+======  
+* 2013-2014: Business Intelligence Analyst.
+  * [Kanui](https://www.kanui.com.br)
+  * Duties included: Development of automation systems with intense manipulation of databases, data
+extraction and processing. Responsible for the TI team in auditing of two Rocket
+Internet ventures.
+  
+* 2013: Software Development Intern.
+  * [Kanui](https://www.kanui.com.br)
+  * Duties included: Development of automation systems with intense manipulation of databases, data
+extraction and processing using mainly Python.
   
 Skills
 ======
@@ -53,7 +54,3 @@ Teaching
   <ul>{% for post in site.teaching %}
     {% include archive-single-cv.html %}
   {% endfor %}</ul>
-  
-Service and leadership
-======
-* Currently signed in to 43 different slack teams
