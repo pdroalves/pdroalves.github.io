@@ -109,6 +109,9 @@
       {% if author.wikipedia %}
         <li><a href="https://en.wikipedia.org/wiki/User:{{ author.wikipedia }}"><i class="fa fa-fw fa-chain" aria-hidden="true"></i> Wikipedia</a></li>
       {% endif %}
+      {% if author.lattes %}
+        <li><a href="http://lattes.cnpq.br/{{ author.lattes }}"><img src="https://pdroalves.github.io/images/lattes.png" style="width:8%"> Curriculum Lattes</a></li>
+      {% endif %}
     </ul>
   </div>
 </div>
