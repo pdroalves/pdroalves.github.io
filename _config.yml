@@ -6,14 +6,14 @@
 # `jekyll serve`. If you change this file, please restart the server process.
 
 # Site Settings
-locale                   : "en-US"
-title                    : "Your Name / Site Title"
+locale                   : "pt-BR"
+title                    : "Pedro Alves"
 title_separator          : "-"
-name                     : &name "Your Name"
-description              : &description "personal description"
-url                      : https://academicpages.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+name                     : &name "Pedro Alves"
+description              : &description "PhD. candidate"
+url                      : https://pdroalves.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
-repository               : "academicpages/academicpages.github.io"
+repository               : "pdroalves/pdroalves.github.io"
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
 breadcrumbs              : false # true, false (default)
 words_per_minute         : 160
@@ -80,13 +80,13 @@ analytics:
 
 # Site Author
 author:
-  name             : "Your Sidebar Name"
+  name             : "Pedro Alves"
   avatar           : "profile.png"
-  bio              : "Your biography for the left-hand sidebar"
-  location         : "Location"
-  employer         :
-  googlescholar    : "http://yourfullgooglescholarurl.com"
-  email            :
+  bio              : "PhD. candidate"
+  location         : "Campinas/SP - Brazil"
+  employer         : "University of Campinas"
+  googlescholar    : "https://scholar.google.com/citations?user=-m1Mj1YAAAAJ&hl=en"
+  email            : "pedro.alves@ic.unicamp.br"
   uri              :
   bitbucket        :
   codepen          :
@@ -94,9 +94,9 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : "academicpages"
+  github           : "pdroalves"
   google_plus      :
-  keybase          :
+  keybase          : "pdroalves"
   instagram        :
   lastfm           :
   linkedin         :
@@ -106,7 +106,7 @@ author:
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          : "replacethistwitterhandle"
+  twitter          : "iampdroalves"
   vine             :
   weibo            :
   xing             :
