@@ -1,4 +1,7 @@
-pub_date	title	venue	excerpt	citation	url_slug	paper_url
-2011-08-20	Ray tracing in GPGPUs	12th International Congress of the Brazilian Geophysical Society	a	Alves, P. G. M. R., & Biloti, R. (2011). Ray tracing in GPGPUs (in portuguese). 12th International Congress of the Brazilian Geophysical Society (CSBGf).	2011-sbgf-tracamento-raios	http://pdroalves.github.io/files/publications/2011_sbgf_tracamento_raios.pdf
-2015-10-01	cuYASHE: Computation over encrypted data on GPGPUs	XV Brazilian Symposium on Information and Computational Systems Security	b	Alves, P. G. M. R., & Aranha, D. F. (2015). cuYASHE : Computação sobre dados cifrados em GPGPUs. SBSeg.	2015-cuyashe	http://pdroalves.github.io/files/publications/2015-sbseg-cuyashe.pdf
-2016-04-01	Efficient GPGPU implementation of the Leveled Fully Homomorphic Encryption scheme YASHE	Congress of the Brazilian Computer Society (CSBC)	c	Alves, P. G. M. R., & Aranha, D. F. (2016). Computacao sobre dados cifrados em GPGPUs. CSBC, 2016.	2016-csbc-efficient-yashe	http://pdroalves.github.io/files/publications/2016-csbc-efficient-yashe.pdf
+pub_date	title	venue	excerpt	url_slug
+2011-08-20	Ray tracing in GPGPUs	12th International Congress of the Brazilian Geophysical Society	In portuguese	2011-sbgf-tracamento-raios
+2015-10-01	cuYASHE: Computation over encrypted data on GPGPUs	XV Brazilian Symposium on Information and Computational Systems Security	In portuguese	2015-sbseg-cuyashe
+2016-04-01	Efficient GPGPU implementation of the Leveled Fully Homomorphic Encryption scheme YASHE	Congress of the Brazilian Computer Society	In portuguese	2016-csbc-efficient-yashe
+2016-10-01	Efficient GPGPU implementation of the Leveled Fully Homomorphic Encryption scheme YASHE	IV Contest of Theses and Dissertations on Information and Computational Systems Security 	Finalist	2016-ctdseg-efficient-yashe
+2016-10-01	A framework for searching encrypted databases	XVI Brazilian Symposium on Information and Computational Systems Security	Best paper runner-up!	2016-sbseg-framework-databases
+2018-01-11	A framework for searching encrypted databases	Journal of Internet Services and Applications	Extension of SBSeg’s paper	2018-jisa-framework-databases
