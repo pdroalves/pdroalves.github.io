@@ -82,11 +82,11 @@ analytics:
 author:
   name             : "Pedro Alves"
   avatar           : "me.jpg"
-  bio              : "PhD. candidate in Computer Science\npedro.alves [at] ic.unicamp.br"
+  bio              : "PhD. candidate in Computer Science"
   location         : "Aarhus - Denmark"
   employer         : "Unicamp | Aarhus University"
   googlescholar    : "https://scholar.google.com/citations?user=-m1Mj1YAAAAJ&hl=en"
-  # email            : "pedro.alves [at] ic.unicamp.br"
+  email            : "pedro.alves [at] ic.unicamp.br"
   uri              :
   bitbucket        :
   codepen          :
