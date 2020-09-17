@@ -11,7 +11,7 @@ title                    : "Pedro Alves"
 title_separator          : "-"
 name                     : &name "Pedro Alves"
 description              : &description "PhD. candidate"
-url                      : https://pdroalves.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://www.iampedro.com # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "pdroalves/pdroalves.github.io"
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
@@ -113,6 +113,7 @@ author:
   youtube          :
   wikipedia        :
   lattes           : "2963997438105619"
+  openpgp          : "pdroalves.pub"
 
 
 # Reading Files
