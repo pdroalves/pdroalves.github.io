@@ -61,7 +61,7 @@ def html_escape(text):
 
 # In[5]:
 
-base_url = "http://pdroalves.github.io/files/publications/"
+base_url = "http://pdroalves.github.io/files/publications"
 
 import os
 for row, item in publications.iterrows():
@@ -95,7 +95,8 @@ for row, item in publications.iterrows():
     ## Markdown description for individual page
     
     if len(str(item.paper_url)) > 5:
-        md += "\n\n<a href='" + base_url + "/" + item.url_slug + ".pdf'>PDF</a>\n" 
+        md += "\n\n<a href='" + base_url + "/" + item.url_slug + ".pdf'>PDF</a>\n"
+
         md += "\n\n<a href='" + base_url + "/" + item.url_slug + ".bib'>BIBTEX</a>\n" 
     
     if len(str(item.excerpt)) > 5:
