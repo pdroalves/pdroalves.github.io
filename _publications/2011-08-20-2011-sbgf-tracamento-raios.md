@@ -8,6 +8,7 @@ paperurl: 'http://pdroalves.github.io/files/publications/2011_sbgf_tracamento_ra
 citation: 'Alves, P. G. M. R., &amp; Biloti, R. (2011). Ray tracing in GPGPUs (in portuguese). 12th International Congress of the Brazilian Geophysical Society (CSBGf).'
 ---
 
-<a href='http://pdroalves.github.io/files/publications/2011_sbgf_tracamento_raios.pdf'>Download paper here</a>
+<a href='http://pdroalves.github.io/files/publications//2011-sbgf-tracamento-raios.pdf'>PDF</a>
 
-Recommended citation: Alves, P. G. M. R., & Biloti, R. (2011). Ray tracing in GPGPUs (in portuguese). 12th International Congress of the Brazilian Geophysical Society (CSBGf).
+
+<a href='http://pdroalves.github.io/files/publications//2011-sbgf-tracamento-raios.bib'>BIBTEX</a>

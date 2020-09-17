@@ -8,6 +8,7 @@ paperurl: 'http://pdroalves.github.io/files/publications/2016-csbc-efficient-yas
 citation: 'Alves, P. G. M. R., &amp; Aranha, D. F. (2016). Computacao sobre dados cifrados em GPGPUs. CSBC, 2016.'
 ---
 
-<a href='http://pdroalves.github.io/files/publications/2016-csbc-efficient-yashe.pdf'>Download paper here</a>
+<a href='http://pdroalves.github.io/files/publications//2016-csbc-efficient-yashe.pdf'>PDF</a>
 
-Recommended citation: Alves, P. G. M. R., & Aranha, D. F. (2016). Computacao sobre dados cifrados em GPGPUs. CSBC, 2016.
+
+<a href='http://pdroalves.github.io/files/publications//2016-csbc-efficient-yashe.bib'>BIBTEX</a>
