@@ -34,6 +34,9 @@
       {% if author.email %}
         <li><i class="fa fa-fw fa-envelope-square" aria-hidden="true"></i> {{ author.email }}</a></li>
       {% endif %}
+      {% if author.openpgp %}
+        <li><a href="https://pdroalves.github.io/files/{{ author.openpgp }}"><i class="fa fa-fw fa-envelope-square" aria-hidden="true"></i> OpenPGP</a></li>
+      {% endif %}
       {% if author.keybase %}
         <li><a href="https://keybase.io/{{ author.keybase }}"><i class="fa fa-fw fa-key" aria-hidden="true"></i> Keybase</a></li>
       {% endif %}
