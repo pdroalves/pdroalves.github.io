@@ -61,7 +61,7 @@ def html_escape(text):
 
 # In[5]:
 
-base_url = "http://pdroalves.github.io/files/publications"
+base_url = "https://pdroalves.github.io/files/publications"
 
 import os
 for row, item in publications.iterrows():
