@@ -12,7 +12,7 @@ redirect_from:
 Education
 ======
 * Ph.D candidate in Computer Science, [University of Campinas](https://www.ic.unicamp.br/), 2016-Today
-** Ph.D guest, [Aarhus University](https://eng.au.dk/), 2016-Today
+  * Ph.D guest, [Aarhus University](https://eng.au.dk/), 2016-Today
 * MSc in Computer Science, [University of Campinas](https://www.ic.unicamp.br/), 2014-2016
 * BSc in Applied and Computational Mathematics, [University of Campinas](https://www.ime.unicamp.br/), 2008-2013
 
