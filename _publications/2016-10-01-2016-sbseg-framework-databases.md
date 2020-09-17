@@ -8,9 +8,6 @@ venue: 'XVI Brazilian Symposium on Information and Computational Systems Securit
 url_slug: '2016-sbseg-framework-databases'
 ---
 
-<a href='http://pdroalves.github.io/files/publications/2016-sbseg-framework-databases.pdf'>PDF</a>
-
-
-<a href='http://pdroalves.github.io/files/publications/2016-sbseg-framework-databases.bib'>BIBTEX</a>
+<a href='http://pdroalves.github.io/files/publications/2016-sbseg-framework-databases.pdf'>PDF</a> | <a href='http://pdroalves.github.io/files/publications/2016-sbseg-framework-databases.bib'>BIBTEX</a>
 
 Best paper runner-up!

@@ -91,12 +91,11 @@ for row, item in publications.iterrows():
     
     ## Markdown description for individual page
     
-    if len(str(item.url_slug)) > 5:
-        md += "\n\n<a href='" + base_url + "/" + item.url_slug + ".pdf'>PDF</a>\n"
-
-        md += "\n\n<a href='" + base_url + "/" + item.url_slug + ".bib'>BIBTEX</a>\n" 
+    if len(str(item.url_slug)) > 0:
+        md += "\n\n<a href='" + base_url + "/" + item.url_slug + ".pdf'>PDF</a> | "
+        md += "<a href='" + base_url + "/" + item.url_slug + ".bib'>BIBTEX</a>\n" 
     
-    if len(str(item.excerpt)) > 5:
+    if len(str(item.excerpt)) > 0:
         md += "\n" + html_escape(item.excerpt) + "\n"
         
     md_filename = os.path.basename(md_filename)

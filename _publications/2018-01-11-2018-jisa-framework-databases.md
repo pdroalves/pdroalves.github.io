@@ -8,9 +8,6 @@ venue: 'Journal of Internet Services and Applications'
 url_slug: '2018-jisa-framework-databases'
 ---
 
-<a href='http://pdroalves.github.io/files/publications/2018-jisa-framework-databases.pdf'>PDF</a>
-
-
-<a href='http://pdroalves.github.io/files/publications/2018-jisa-framework-databases.bib'>BIBTEX</a>
+<a href='http://pdroalves.github.io/files/publications/2018-jisa-framework-databases.pdf'>PDF</a> | <a href='http://pdroalves.github.io/files/publications/2018-jisa-framework-databases.bib'>BIBTEX</a>
 
 Extension of SBSeg’s paper
