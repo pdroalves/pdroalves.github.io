@@ -11,22 +11,28 @@ author_profile: true
 
 {% include base_path %}
 
-Refereed publications in local events
+<h2>Refereed publications in local events</h2>h2>
 {% for post in site.publications reversed %}
   {% include archive-single.html %}
 {% endfor %}
 
-Journal articles
+<hr>
+
+<h2>Journal articles</h2>
 {% for post in site.journals reversed %}
   {% include archive-single.html %}
 {% endfor %}
 
-Contests
+<hr>
+
+<h2>Contests</h2>
 {% for post in site.contests reversed %}
   {% include archive-single.html %}
 {% endfor %}
 
-Thesis/Dissertation
+<hr>
+
+<h2>Thesis/Dissertation</h2>
 {% for post in site.dissertations reversed %}
   {% include archive-single.html %}
 {% endfor %}
