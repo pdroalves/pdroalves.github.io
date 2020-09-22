@@ -1,13 +1,15 @@
 ---
 layout: archive
-title: "CV"
-permalink: /cv/
+title: "Resume"
+permalink: /resume/
 author_profile: true
 redirect_from:
   - /resume
 ---
 
 {% include base_path %}
+
+Below you will find a summary of my resume. [This](resume_pdroalves.pdf) is the full version.
 
 Education
 ======
@@ -29,11 +31,6 @@ Internet ventures.
   * Duties included: Development of automation systems with intense manipulation of databases, data
 extraction and processing using mainly Python.
   
-Publications
-======
-  <ul>{% for post in site.publications %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
   
 <!-- Talks
 ======
