@@ -4,12 +4,12 @@ title: "Resume"
 permalink: /resume/
 author_profile: true
 redirect_from:
-  - /resume
+  - /cv
 ---
 
 {% include base_path %}
 
-Below you will find a summary of my resume. [This](resume_pdroalves.pdf) is the full version.
+Below you will find a summary of my resume. [This](https://www.iampedro.com/files/resume_pdroalves.pdf) is the full version.
 
 Education
 ======
