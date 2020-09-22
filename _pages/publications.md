@@ -17,12 +17,12 @@ Refereed publications in local events
 {% endfor %}
 
 Journal articles
-{% for post in site.journalarticles reversed %}
+{% for post in site.journals reversed %}
   {% include archive-single.html %}
 {% endfor %}
 
 Contests
-{% for post in site.contestspublications reversed %}
+{% for post in site.contests reversed %}
   {% include archive-single.html %}
 {% endfor %}
 
