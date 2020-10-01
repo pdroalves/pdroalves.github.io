@@ -197,6 +197,9 @@ collections:
   talks:
     output: false
     permalink: /:collection/:path/
+  preprints:
+    output: false
+    permalink: /:collection/:path/
 
 
 # Defaults
