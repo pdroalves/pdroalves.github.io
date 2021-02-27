@@ -7,7 +7,7 @@ abstract: 'Cloud computing is a ubiquitous paradigm. It has been responsible for
 date: 2016-10-01
 venue: 'XVI Brazilian Symposium on Information and Computational Systems Security'
 url_slug: '2016-sbseg-framework-databases'
-location: "Niterói, RJ"
+location: "Niterói, RJ, Brazil"
 type: "Conference presentation"
 link: 'https://pdroalves.github.io/files/talks/2016-sbseg-databases.pdf'
 ---
