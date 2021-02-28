@@ -6,7 +6,7 @@ abstract: 'Security in cloud computing is a relevant topic for research. Multipl
 date: 2016-06-01
 venue: 'Institute of Computing from University of Campinas'
 url_slug: '2016-ctdseg-efficient-yashe'
-paperurl: '2016-06-09-disseration'
+paperurl: 'https://pdroalves.github.io/files/publications/2016-06-09-dissertation.pdf'
 bibtexurl: ''
 inportuguese: true
 ---
