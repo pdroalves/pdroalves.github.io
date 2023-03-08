@@ -10,7 +10,7 @@ locale                   : "en_us"
 title                    : "Pedro Alves"
 title_separator          : "-"
 name                     : &name "Pedro Alves"
-description              : &description "PhD. candidate"
+description              : &description "GPU Engineer"
 url                      : https://www.iampedro.com # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "pdroalves/pdroalves.github.io"
@@ -82,11 +82,11 @@ analytics:
 author:
   name             : "Pedro Alves"
   avatar           : "me.jpg"
-  bio              : "PhD. candidate in Computer Science"
+  bio              : "GPU Engineer"
   location         : "Campinas, SP - Brazil"
-  employer         : "Unicamp | Aarhus University"
+  employer         : "Zama"
   googlescholar    : "https://scholar.google.com/citations?user=-m1Mj1YAAAAJ&hl=en"
-  email            : "pedro.alves [at] ic.unicamp.br"
+  email            : "pedro.alves [at] zama.ai"
   researchgate     :  "https://www.researchgate.net/profile/Pedro_Alves37"
   uri              :
   bitbucket        :
