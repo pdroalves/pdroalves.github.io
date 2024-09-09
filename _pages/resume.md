@@ -20,6 +20,10 @@ Education
 
 Work experience
 ======  
+* 2022 - at present: Senior GPU Engineer.
+  * [Zama](https://www.zama.ai/)
+  * Duties included: Development of a CUDA-based library to offer the arithmetic needed to accelerate
+TFHE.
 * 2013-2014: Business Intelligence Analyst.
   * [Kanui](https://www.kanui.com.br)
   * Duties included: Development of automation systems with intense manipulation of databases, data
