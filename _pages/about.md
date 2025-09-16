@@ -8,8 +8,8 @@ redirect_from:
   - /about.html
 ---
 
-I'm a PhD candidate at the Institute of Computing of University of Campinas, Brazil. My supervisor is [Professor Diego Aranha](https://sites.google.com/site/dfaranha).
+I am a Senior GPU Engineer at [Zama](https://www.zama.ai/), where I work on accelerating privacy-preserving technologies, with a focus on Fully Homomorphic Encryption (FHE). My main expertise lies in cryptography, high-performance computing, and GPU programming (CUDA, Rust, C++), and I contribute to Zama’s open-source FHE libraries and blockchain solutions.
 
-I have a bachelor degree in Applied Mathematics and MSc in Computer Science from the University of Campinas. My research interests aim privacy preserving computing, in particular cryptography and functional encryption; and high performance computing. Furthermore, I have works in geophysics and biology on the development of specialized software using CUDA platform. 
+I hold a Ph.D. and M.Sc. in Computer Science and a B.Sc. in Applied Mathematics, all from the University of Campinas (Unicamp), Brazil. During my Ph.D., supervised by Professor Diego Aranha, I specialized in privacy-preserving computing, particularly cryptography and functional encryption. 
 
-I'm visiting [Aarhus Crypto Group](https://users-cs.au.dk/orlandi/cryptogroup) at the Department of Computer Science of Aarhus University, Denmark, until September 2021.
+Between 2021 and 2022, I was a visiting researcher at the Aarhus Crypto Group, Department of Computer Science, Aarhus University, Denmark. Today, my work continues to bridge applied cryptography and high-performance systems, helping bring advanced cryptographic tools closer to real-world deployment.
