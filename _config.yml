@@ -81,7 +81,7 @@ analytics:
 # Site Author
 author:
   name             : "Pedro Alves"
-  avatar           : "me.jpg"
+  avatar           : "https://www.gravatar.com/avatar/42671c229882cd72c9b4229435ab5ee0?s=200&d=identicon&r=g"
   bio              : "PhD. candidate in Computer Science"
   location         : "Aarhus - Denmark"
   employer         : "Unicamp | Aarhus University"
