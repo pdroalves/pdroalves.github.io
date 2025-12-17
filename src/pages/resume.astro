@@ -61,7 +61,6 @@ try {
         <h1>{resumeData.personal.name || 'Resume'}</h1>
         {resumeData.personal.title && <p class="title">{resumeData.personal.title}</p>}
         <div class="contact-info">
-          {resumeData.personal.email && <p>📧 {resumeData.personal.email}</p>}
           {resumeData.personal.location && <p>📍 {resumeData.personal.location}</p>}
           {resumeData.personal.website && <p>🌐 <a href={resumeData.personal.website}>{resumeData.personal.website}</a></p>}
         </div>
