@@ -7,13 +7,19 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { marked } from 'marked';
+import { fileURLToPath } from 'url';
+
+// Get the project root directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
 
 // Load content files
 let aboutHtml = '';
 let socialLinks: Array<{name: string; url: string; icon: string; display?: boolean}> = [];
 
 try {
-  const aboutPath = path.join(process.cwd(), 'src', 'content', 'about.md');
+  const aboutPath = path.join(projectRoot, 'src', 'content', 'about.md');
   if (fs.existsSync(aboutPath)) {
     const aboutText = fs.readFileSync(aboutPath, 'utf-8');
     aboutHtml = marked(aboutText);
@@ -23,7 +29,7 @@ try {
 }
 
 try {
-  const socialPath = path.join(process.cwd(), 'src', 'content', 'social.yaml');
+  const socialPath = path.join(projectRoot, 'src', 'content', 'social.yaml');
   if (fs.existsSync(socialPath)) {
     const socialData = yaml.load(fs.readFileSync(socialPath, 'utf-8')) as {links?: Array<{name: string; url: string; icon: string; display?: boolean}>};
     socialLinks = (socialData?.links || []).filter(link => link.display !== false);

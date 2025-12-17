@@ -3,6 +3,11 @@ import PageLayout from '../layouts/PageLayout.astro';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
 
 interface PortfolioData {
   projects?: Array<{
@@ -16,7 +21,7 @@ interface PortfolioData {
 
 let portfolioData: PortfolioData = {};
 try {
-  const portfolioPath = path.join(process.cwd(), 'src', 'content', 'portfolio.yaml');
+  const portfolioPath = path.join(projectRoot, 'src', 'content', 'portfolio.yaml');
   if (fs.existsSync(portfolioPath)) {
     portfolioData = yaml.load(fs.readFileSync(portfolioPath, 'utf-8')) as PortfolioData;
   }

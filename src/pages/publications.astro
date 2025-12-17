@@ -3,6 +3,11 @@ import PageLayout from '../layouts/PageLayout.astro';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
 
 interface Publication {
   year?: string;
@@ -22,7 +27,7 @@ interface PublicationsData {
 
 let publicationsData: PublicationsData = {};
 try {
-  const pubPath = path.join(process.cwd(), 'src', 'content', 'publications.yaml');
+  const pubPath = path.join(projectRoot, 'src', 'content', 'publications.yaml');
   if (fs.existsSync(pubPath)) {
     publicationsData = yaml.load(fs.readFileSync(pubPath, 'utf-8')) as PublicationsData;
   }
