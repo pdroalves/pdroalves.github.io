@@ -1,7 +1,0 @@
-pub_date	title	venue	excerpt	url_slug
-2011-08-20	Ray tracing in GPGPUs	12th International Congress of the Brazilian Geophysical Society	In portuguese	2011-sbgf-tracamento-raios
-2015-10-01	cuYASHE: Computation over encrypted data on GPGPUs	XV Brazilian Symposium on Information and Computational Systems Security	In portuguese	2015-sbseg-cuyashe
-2016-04-01	Efficient GPGPU implementation of the Leveled Fully Homomorphic Encryption scheme YASHE	Congress of the Brazilian Computer Society	In portuguese	2016-csbc-efficient-yashe
-2016-10-01	Efficient GPGPU implementation of the Leveled Fully Homomorphic Encryption scheme YASHE	IV Contest of Theses and Dissertations on Information and Computational Systems Security 	Finalist	2016-ctdseg-efficient-yashe
-2016-10-01	A framework for searching encrypted databases	XVI Brazilian Symposium on Information and Computational Systems Security	Best paper runner-up!	2016-sbseg-framework-databases
-2018-01-11	A framework for searching encrypted databases	Journal of Internet Services and Applications	Extension of SBSeg’s paper	2018-jisa-framework-databases
