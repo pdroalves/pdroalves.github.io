@@ -14,3 +14,4 @@ export const collections = {
   articles: articlesCollection,
 };
 
+
