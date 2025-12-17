@@ -6,8 +6,10 @@ import { siteConfig } from '../config';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { marked } from 'marked';
+import MarkdownIt from 'markdown-it';
 import { fileURLToPath } from 'url';
+
+const md = new MarkdownIt();
 
 // Get the project root directory
 const __filename = fileURLToPath(import.meta.url);
@@ -18,17 +20,19 @@ const projectRoot = path.resolve(__dirname, '../..');
 let aboutHtml = '';
 let socialLinks: Array<{name: string; url: string; icon: string; display?: boolean}> = [];
 
+// Load about.md and convert to HTML
 try {
   const aboutPath = path.join(projectRoot, 'src', 'content', 'about.md');
   if (fs.existsSync(aboutPath)) {
     const aboutText = fs.readFileSync(aboutPath, 'utf-8');
-    // marked v15+ - use marked.parse which returns a Promise
-    aboutHtml = await marked.parse(aboutText);
+    // Use markdown-it for synchronous markdown parsing
+    aboutHtml = md.render(aboutText);
   }
 } catch (e) {
   console.error('Error loading about.md:', e);
 }
 
+// Load social links
 try {
   const socialPath = path.join(projectRoot, 'src', 'content', 'social.yaml');
   if (fs.existsSync(socialPath)) {
