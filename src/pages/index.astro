@@ -22,9 +22,8 @@ try {
   const aboutPath = path.join(projectRoot, 'src', 'content', 'about.md');
   if (fs.existsSync(aboutPath)) {
     const aboutText = fs.readFileSync(aboutPath, 'utf-8');
-    // marked v5+ requires await, but we're in a sync context, so use the sync version
-    // marked v5+ is async, but we need sync here - use marked.parseInline for sync
-    aboutHtml = marked.parse(aboutText, { async: false }) as string;
+    // marked v15+ - use marked.parse which returns a Promise
+    aboutHtml = await marked.parse(aboutText);
   }
 } catch (e) {
   console.error('Error loading about.md:', e);
