@@ -23,6 +23,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '../..');
 
+// Get the project root directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
+
 let gpgData: GPGData = {};
 try {
   const gpgPath = path.join(projectRoot, 'src', 'content', 'gpg.yaml');
@@ -32,11 +37,6 @@ try {
 } catch (e) {
   console.error('Error loading gpg.yaml:', e);
 }
-
-// Get the project root directory
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '../..');
 
 // Try to load key files
 function loadKeyFile(filePath: string): string | null {
