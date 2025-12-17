@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - astro-redesign
   workflow_dispatch:
 
 permissions:
