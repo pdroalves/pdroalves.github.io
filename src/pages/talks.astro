@@ -1,0 +1,164 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+
+interface Talk {
+  title?: string;
+  date?: string;
+  venue?: string;
+  location?: string;
+  type?: string;
+  link?: string;
+}
+
+interface TalksData {
+  talks?: Talk[];
+}
+
+let talksData: TalksData = {};
+try {
+  const talksPath = path.join(process.cwd(), 'src', 'content', 'talks.yaml');
+  if (fs.existsSync(talksPath)) {
+    talksData = yaml.load(fs.readFileSync(talksPath, 'utf-8')) as TalksData;
+  }
+} catch (e) {
+  console.error('Error loading talks.yaml:', e);
+}
+const talks = talksData.talks || [];
+
+// Group talks by year
+const talksByYear = talks.reduce((acc, talk) => {
+  if (talk.date) {
+    const year = new Date(talk.date).getFullYear().toString();
+    if (!acc[year]) {
+      acc[year] = [];
+    }
+    acc[year].push(talk);
+  } else {
+    if (!acc['Unknown']) {
+      acc['Unknown'] = [];
+    }
+    acc['Unknown'].push(talk);
+  }
+  return acc;
+}, {} as Record<string, Talk[]>);
+
+// Sort years descending
+const sortedYears = Object.keys(talksByYear).sort((a, b) => {
+  if (a === 'Unknown') return 1;
+  if (b === 'Unknown') return -1;
+  return parseInt(b) - parseInt(a);
+});
+---
+
+<PageLayout title="Talks">
+  <div class="talks">
+    <h1>Talks</h1>
+    <p class="intro">Conference presentations, workshops, and invited talks.</p>
+    
+    {talks.length > 0 ? (
+      <div class="talks-list">
+        {sortedYears.map((year) => (
+          <section class="year-section">
+            <h2>{year}</h2>
+            {talksByYear[year].map((talk, idx) => (
+              <div class="talk-item" key={`talk-${year}-${idx}`}>
+                <h3>{talk.title}</h3>
+                <div class="talk-details">
+                  {talk.date && (
+                    <span class="date">
+                      📅 {new Date(talk.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
+                  )}
+                  {talk.venue && (
+                    <span class="venue">
+                      📍 {talk.venue}
+                      {talk.location && `, ${talk.location}`}
+                    </span>
+                  )}
+                  {talk.type && (
+                    <span class="type">
+                      🎤 {talk.type}
+                    </span>
+                  )}
+                </div>
+                {talk.link && talk.link !== '#' && (
+                  <a href={talk.link} target="_blank" rel="noopener noreferrer" class="talk-link">
+                    View Details →
+                  </a>
+                )}
+              </div>
+            ))}
+          </section>
+        ))}
+      </div>
+    ) : (
+      <p>No talks available yet. Check back soon!</p>
+    )}
+  </div>
+</PageLayout>
+
+<style>
+  .talks {
+    max-width: 1000px;
+  }
+  
+  .intro {
+    font-size: 1.1rem;
+    color: var(--color-text-light);
+    margin-bottom: 2rem;
+  }
+  
+  .year-section {
+    margin-bottom: 3rem;
+  }
+  
+  .year-section h2 {
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .talk-item {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-secondary);
+  }
+  
+  .talk-item h3 {
+    margin-top: 0;
+    color: var(--color-primary);
+  }
+  
+  .talk-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem 0;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+  }
+  
+  .talk-details span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  
+  .talk-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--color-secondary);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .talk-link:hover {
+    text-decoration: underline;
+  }
+</style>
+

@@ -1,0 +1,35 @@
+---
+import { siteConfig } from '../config';
+---
+
+<footer class="footer">
+  <div class="footer-content">
+    <p>&copy; {new Date().getFullYear()} {siteConfig.author}. All rights reserved.</p>
+    <p class="footer-note">Powered by Astro & GitHub Pages</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-primary);
+    color: white;
+    padding: 2rem;
+    margin-top: 4rem;
+    text-align: center;
+  }
+  
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .footer p {
+    margin: 0.5rem 0;
+  }
+  
+  .footer-note {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+</style>
+

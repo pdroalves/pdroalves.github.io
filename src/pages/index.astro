@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfilePicture from '../components/ProfilePicture.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import { siteConfig } from '../config';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import { marked } from 'marked';
+
+// Load content files
+let aboutHtml = '';
+let socialLinks: Array<{name: string; url: string; icon: string; display?: boolean}> = [];
+
+try {
+  const aboutPath = path.join(process.cwd(), 'src', 'content', 'about.md');
+  if (fs.existsSync(aboutPath)) {
+    const aboutText = fs.readFileSync(aboutPath, 'utf-8');
+    aboutHtml = marked(aboutText);
+  }
+} catch (e) {
+  console.error('Error loading about.md:', e);
+}
+
+try {
+  const socialPath = path.join(process.cwd(), 'src', 'content', 'social.yaml');
+  if (fs.existsSync(socialPath)) {
+    const socialData = yaml.load(fs.readFileSync(socialPath, 'utf-8')) as {links?: Array<{name: string; url: string; icon: string; display?: boolean}>};
+    socialLinks = (socialData?.links || []).filter(link => link.display !== false);
+  }
+} catch (e) {
+  console.error('Error loading social.yaml:', e);
+}
+---
+
+<BaseLayout title="Home" description={siteConfig.description}>
+  <div class="landing-page">
+    <div class="hero-section">
+      <ProfilePicture />
+      <h1>{siteConfig.author}</h1>
+      <p class="subtitle">{siteConfig.title.split(' - ')[1]}</p>
+      <SocialLinks links={socialLinks} />
+    </div>
+    
+    <section class="about-section">
+      <h2>About</h2>
+      {aboutHtml ? (
+        <div class="about-content" set:html={aboutHtml} />
+      ) : (
+        <p>About information will be loaded from content/about.md</p>
+      )}
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .landing-page {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  
+  .hero-section {
+    margin-bottom: 4rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 3rem;
+    margin: 1rem 0 0.5rem;
+    color: var(--color-primary);
+  }
+  
+  .subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    margin-bottom: 2rem;
+  }
+  
+  .about-section {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .about-section h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .about-content {
+    line-height: 1.8;
+  }
+  
+  .about-content h1 {
+    font-size: 2rem;
+    margin-top: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 2rem;
+    }
+    
+    .subtitle {
+      font-size: 1rem;
+    }
+  }
+</style>

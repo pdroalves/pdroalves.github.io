@@ -1,0 +1,14 @@
+talks:
+  - title: "Faster Homomorphic Encryption over GPGPUs"
+    date: "2021-03-15"
+    venue: "Financial Cryptography and Data Security"
+    location: "Virtual"
+    type: "conference"
+    link: "#"
+  - title: "Efficient Implementation of Homomorphic Encryption"
+    date: "2018-06-10"
+    venue: "Cryptography Workshop"
+    location: "São Paulo, Brazil"
+    type: "workshop"
+    link: "#"
+

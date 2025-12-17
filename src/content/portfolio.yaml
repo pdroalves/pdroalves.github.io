@@ -1,0 +1,12 @@
+projects:
+  - title: "CUYASHE"
+    description: "Efficient GPGPU implementation of the leveled fully homomorphic encryption scheme YASHE"
+    link: "https://github.com/pdroalves/cuyashe"
+    tags: ["Cryptography", "CUDA", "Homomorphic Encryption", "C++"]
+    year: "2016"
+  - title: "Encrypted Database Framework"
+    description: "Framework for searching encrypted databases using order-revealing and homomorphic encryption"
+    link: "#"
+    tags: ["Cryptography", "Database", "Privacy"]
+    year: "2016"
+

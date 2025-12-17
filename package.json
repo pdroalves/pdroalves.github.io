@@ -1,0 +1,19 @@
+{
+  "name": "personalsite",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^6.3.10",
+    "astro": "^5.16.6",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.1",
+    "marked": "^15.0.12",
+    "remark-gfm": "^4.0.1"
+  }
+}

@@ -1,0 +1,51 @@
+personal:
+  name: "Pedro Alves"
+  title: "PhD in Computer Science"
+  email: "pdroalves@gmail.com"
+  location: "Brazil"
+  website: "https://www.iampedro.com"
+
+education:
+  - degree: "PhD in Computer Science"
+    institution: "Institute of Computing, University of Campinas"
+    year: "2016"
+    thesis: "Efficient GPGPU implementation of the Leveled Fully Homomorphic Encryption scheme YASHE"
+  - degree: "Master's Degree"
+    institution: "University of Campinas"
+    year: "2012"
+  - degree: "Bachelor's Degree"
+    institution: "University of Campinas"
+    year: "2010"
+
+experience:
+  - title: "Research Position"
+    organization: "Zama"
+    location: "Brazil"
+    startDate: "2020"
+    endDate: "Present"
+    description: "Working on privacy-preserving technologies and homomorphic encryption"
+  - title: "Previous Position"
+    organization: "Previous Organization"
+    location: "Brazil"
+    startDate: "2016"
+    endDate: "2020"
+    description: "Research and development in cryptographic systems"
+
+skills:
+  - category: "Programming Languages"
+    items: ["C++", "C", "CUDA", "Python", "JavaScript", "TypeScript"]
+  - category: "Cryptography"
+    items: ["Homomorphic Encryption", "Fully Homomorphic Encryption", "Order-Revealing Encryption"]
+  - category: "High Performance Computing"
+    items: ["GPGPU", "CUDA", "Parallel Computing", "Optimization"]
+
+teaching:
+  - course: "Cryptography"
+    institution: "University of Campinas"
+    year: "2015"
+    role: "Teaching Assistant"
+  - course: "Computer Security"
+    institution: "University of Campinas"
+    year: "2014"
+    role: "Teaching Assistant"
+

@@ -1,0 +1,126 @@
+---
+import { siteConfig } from '../config';
+
+// In Astro, we'll load this at build time
+// For now, we'll use a simple approach - the component will be updated when content is loaded
+interface SocialLink {
+  name: string;
+  url: string;
+  icon: string;
+  display?: boolean;
+}
+
+// This will be populated from the YAML file at build time
+// For now, we'll provide a default structure
+let socialLinks: SocialLink[] = [];
+
+// Try to import the social links
+try {
+  const socialData = await import('../../content/social.yaml?raw').catch(() => null);
+  if (socialData) {
+    // Parse YAML in the component
+    // For now, we'll handle this in the page components that use this
+  }
+} catch (e) {
+  // Fallback to empty array
+}
+
+// Icon mapping for common services
+const iconMap: Record<string, string> = {
+  linkedin: '🔗',
+  github: '🐙',
+  twitter: '🐦',
+  orcid: '🔬',
+  lattes: '📚',
+  researchgate: '🔬',
+  googlescholar: '🎓',
+  keybase: '🔑',
+  openpgp: '🔐',
+  email: '✉️',
+};
+
+// Props to accept links from parent
+interface Props {
+  links?: SocialLink[];
+}
+
+const { links = [] } = Astro.props;
+socialLinks = links.filter(link => link.display !== false);
+---
+
+<div class="social-links">
+  {socialLinks.length > 0 ? socialLinks.map((link) => {
+    const icon = iconMap[link.icon.toLowerCase()] || link.icon || '🔗';
+    const isCustomIcon = link.icon.startsWith('/');
+    
+    return (
+      <a 
+        href={link.url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="social-link"
+        aria-label={link.name}
+      >
+        {isCustomIcon ? (
+          <img src={link.icon} alt={link.name} class="custom-icon" />
+        ) : (
+          <span class="icon">{icon}</span>
+        )}
+        <span class="name">{link.name}</span>
+      </a>
+    );
+  }) : (
+    <p class="no-links">Social links will appear here once configured in content/social.yaml</p>
+  )}
+</div>
+
+<style>
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+  }
+  
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-background);
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+  }
+  
+  .social-link:hover {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .social-link .icon {
+    font-size: 1.2rem;
+  }
+  
+  .social-link .custom-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+  
+  .social-link .name {
+    font-weight: 500;
+  }
+  
+  .no-links {
+    color: var(--color-text-light);
+    font-style: italic;
+  }
+</style>

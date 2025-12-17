@@ -1,0 +1,16 @@
+current:
+  keyId: "0x1234567890ABCDEF"
+  fingerprint: "ABCD EF12 3456 7890 ABCD EF12 3456 7890 ABCD EF12"
+  created: "2020-01-01"
+  expires: "2025-01-01"
+  file: "/gpg/current.asc"
+  email: "pdroalves@gmail.com"
+
+archived:
+  - keyId: "0x0987654321FEDCBA"
+    fingerprint: "FEDC BA09 8765 4321 FEDC BA09 8765 4321 FEDC BA09"
+    created: "2015-01-01"
+    expires: "2020-01-01"
+    file: "/gpg/old-key-1.asc"
+    email: "pdroalves@gmail.com"
+

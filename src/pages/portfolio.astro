@@ -1,0 +1,146 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+
+interface PortfolioData {
+  projects?: Array<{
+    title?: string;
+    description?: string;
+    link?: string;
+    tags?: string[];
+    year?: string;
+  }>;
+}
+
+let portfolioData: PortfolioData = {};
+try {
+  const portfolioPath = path.join(process.cwd(), 'src', 'content', 'portfolio.yaml');
+  if (fs.existsSync(portfolioPath)) {
+    portfolioData = yaml.load(fs.readFileSync(portfolioPath, 'utf-8')) as PortfolioData;
+  }
+} catch (e) {
+  console.error('Error loading portfolio.yaml:', e);
+}
+const projects = portfolioData.projects || [];
+---
+
+<PageLayout title="Portfolio">
+  <div class="portfolio">
+    <h1>Portfolio</h1>
+    <p class="intro">A selection of my projects and contributions.</p>
+    
+    {projects.length > 0 ? (
+      <div class="projects-grid">
+        {projects.map((project) => (
+          <div class="project-card">
+            <h3>{project.title}</h3>
+            {project.year && <span class="year">{project.year}</span>}
+            {project.description && <p class="description">{project.description}</p>}
+            {project.tags && project.tags.length > 0 && (
+              <div class="tags">
+                {project.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+            {project.link && project.link !== '#' && (
+              <a href={project.link} target="_blank" rel="noopener noreferrer" class="project-link">
+                View Project →
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p>No projects available yet. Check back soon!</p>
+    )}
+  </div>
+</PageLayout>
+
+<style>
+  .portfolio {
+    max-width: 1000px;
+  }
+  
+  .intro {
+    font-size: 1.1rem;
+    color: var(--color-text-light);
+    margin-bottom: 2rem;
+  }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .project-card {
+    background: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px solid var(--color-border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .project-card h3 {
+    margin-top: 0;
+    color: var(--color-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .year {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    font-weight: normal;
+  }
+  
+  .description {
+    margin: 1rem 0;
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+  
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  .tag {
+    background: var(--color-secondary);
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  
+  .project-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .project-link:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+

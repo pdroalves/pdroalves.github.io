@@ -1,0 +1,238 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+
+interface Publication {
+  year?: string;
+  title?: string;
+  venue?: string;
+  abstract?: string;
+  links?: Array<{type?: string; url?: string}>;
+  note?: string;
+}
+
+interface PublicationsData {
+  preprints?: Publication[];
+  journal?: Publication[];
+  conferences?: Publication[];
+  thesis?: Publication[];
+}
+
+let publicationsData: PublicationsData = {};
+try {
+  const pubPath = path.join(process.cwd(), 'src', 'content', 'publications.yaml');
+  if (fs.existsSync(pubPath)) {
+    publicationsData = yaml.load(fs.readFileSync(pubPath, 'utf-8')) as PublicationsData;
+  }
+} catch (e) {
+  console.error('Error loading publications.yaml:', e);
+}
+---
+
+<PageLayout title="Publications">
+  <div class="publications">
+    <h1>Publications</h1>
+    
+    {publicationsData.preprints && publicationsData.preprints.length > 0 && (
+      <section class="publication-section">
+        <h2>Pre-prints</h2>
+        {publicationsData.preprints.map((pub, idx) => (
+          <div class="publication-item" key={`preprint-${idx}`}>
+            <div class="publication-header">
+              <span class="year">{pub.year}</span>
+              <h3>{pub.title}</h3>
+            </div>
+            {pub.venue && <p class="venue">At <em>{pub.venue}</em></p>}
+            {pub.abstract && (
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>{pub.abstract}</p>
+              </details>
+            )}
+            {pub.links && pub.links.length > 0 && (
+              <div class="links">
+                {pub.links.map((link, linkIdx) => (
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" class="pub-link">
+                    {link.type || 'Link'} →
+                  </a>
+                ))}
+              </div>
+            )}
+            {pub.note && <p class="note"><strong>{pub.note}</strong></p>}
+          </div>
+        ))}
+      </section>
+    )}
+    
+    {publicationsData.journal && publicationsData.journal.length > 0 && (
+      <section class="publication-section">
+        <h2>Journal Articles</h2>
+        {publicationsData.journal.map((pub, idx) => (
+          <div class="publication-item" key={`journal-${idx}`}>
+            <div class="publication-header">
+              <span class="year">{pub.year}</span>
+              <h3>{pub.title}</h3>
+            </div>
+            {pub.venue && <p class="venue">At <em>{pub.venue}</em></p>}
+            {pub.abstract && (
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>{pub.abstract}</p>
+              </details>
+            )}
+            {pub.links && pub.links.length > 0 && (
+              <div class="links">
+                {pub.links.map((link, linkIdx) => (
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" class="pub-link">
+                    {link.type || 'Link'} →
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </section>
+    )}
+    
+    {publicationsData.conferences && publicationsData.conferences.length > 0 && (
+      <section class="publication-section">
+        <h2>Refereed Publications in Local Events</h2>
+        {publicationsData.conferences.map((pub, idx) => (
+          <div class="publication-item" key={`conf-${idx}`}>
+            <div class="publication-header">
+              <span class="year">{pub.year}</span>
+              <h3>{pub.title}</h3>
+            </div>
+            {pub.venue && <p class="venue">At <em>{pub.venue}</em></p>}
+            {pub.abstract && (
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>{pub.abstract}</p>
+              </details>
+            )}
+            {pub.links && pub.links.length > 0 && (
+              <div class="links">
+                {pub.links.map((link, linkIdx) => (
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" class="pub-link">
+                    {link.type || 'Link'} →
+                  </a>
+                ))}
+              </div>
+            )}
+            {pub.note && <p class="note"><strong>{pub.note}</strong></p>}
+          </div>
+        ))}
+      </section>
+    )}
+    
+    {publicationsData.thesis && publicationsData.thesis.length > 0 && (
+      <section class="publication-section">
+        <h2>Thesis/Dissertation</h2>
+        {publicationsData.thesis.map((pub, idx) => (
+          <div class="publication-item" key={`thesis-${idx}`}>
+            <div class="publication-header">
+              <span class="year">{pub.year}</span>
+              <h3>{pub.title}</h3>
+            </div>
+            {pub.venue && <p class="venue">At <em>{pub.venue}</em></p>}
+            {pub.abstract && (
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p>{pub.abstract}</p>
+              </details>
+            )}
+          </div>
+        ))}
+      </section>
+    )}
+  </div>
+</PageLayout>
+
+<style>
+  .publications {
+    max-width: 1000px;
+  }
+  
+  .publication-section {
+    margin-bottom: 3rem;
+  }
+  
+  .publication-section h2 {
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .publication-item {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 4px solid var(--color-secondary);
+  }
+  
+  .publication-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .year {
+    font-weight: bold;
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+  
+  .publication-item h3 {
+    margin: 0;
+    flex: 1;
+  }
+  
+  .venue {
+    color: var(--color-text-light);
+    margin: 0.5rem 0;
+  }
+  
+  .abstract {
+    margin: 1rem 0;
+  }
+  
+  .abstract summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .abstract p {
+    margin-top: 0.5rem;
+    line-height: 1.8;
+    color: var(--color-text);
+  }
+  
+  .links {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .pub-link {
+    color: var(--color-secondary);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .pub-link:hover {
+    text-decoration: underline;
+  }
+  
+  .note {
+    margin-top: 0.5rem;
+    color: var(--color-accent);
+  }
+</style>
+

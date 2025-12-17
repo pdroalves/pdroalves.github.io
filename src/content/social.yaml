@@ -1,0 +1,38 @@
+links:
+  - name: "LinkedIn"
+    url: "https://linkedin.com/in/pdroalves"
+    icon: "linkedin"
+    display: true
+  - name: "GitHub"
+    url: "https://github.com/pdroalves"
+    icon: "github"
+    display: true
+  - name: "ORCID"
+    url: "https://orcid.org/0000-0000-0000-0000"
+    icon: "orcid"
+    display: true
+  - name: "Curriculum Lattes"
+    url: "http://lattes.cnpq.br/0000000000000000"
+    icon: "lattes"
+    display: true
+  - name: "Twitter"
+    url: "https://twitter.com/pdroalves"
+    icon: "twitter"
+    display: true
+  - name: "ResearchGate"
+    url: "https://www.researchgate.net/profile/Pedro-Alves"
+    icon: "researchgate"
+    display: true
+  - name: "Google Scholar"
+    url: "https://scholar.google.com/citations?user=YOUR_ID"
+    icon: "googlescholar"
+    display: true
+  - name: "Keybase"
+    url: "https://keybase.io/pdroalves"
+    icon: "keybase"
+    display: true
+  - name: "OpenPGP"
+    url: "https://keys.openpgp.org/search?q=pdroalves@gmail.com"
+    icon: "openpgp"
+    display: true
+
