@@ -10,20 +10,8 @@ interface SocialLink {
   display?: boolean;
 }
 
-// This will be populated from the YAML file at build time
-// For now, we'll provide a default structure
+// Social links are passed as props from parent components
 let socialLinks: SocialLink[] = [];
-
-// Try to import the social links
-try {
-  const socialData = await import('../../content/social.yaml?raw').catch(() => null);
-  if (socialData) {
-    // Parse YAML in the component
-    // For now, we'll handle this in the page components that use this
-  }
-} catch (e) {
-  // Fallback to empty array
-}
 
 // Icon mapping for common services
 const iconMap: Record<string, string> = {
