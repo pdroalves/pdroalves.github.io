@@ -1,0 +1,42 @@
+projects:
+  - title: "TFHE-rs"
+    description: "Pure Rust implementation of TFHE for boolean and integer arithmetics over encrypted data. Core cryptographic library with Rust, C, and WASM APIs. Contributor to this major open-source project by Zama, implementing programmable bootstrapping and advanced FHE features."
+    link: "https://github.com/zama-ai/tfhe-rs"
+    tags: ["Rust", "TFHE", "Homomorphic Encryption", "Cryptography", "Open Source"]
+    year: "2022"
+
+  - title: "Farewell"
+    description: "Decentralized application (dApp) for posthumous encrypted messages using smart contracts on fhEVM. Features check-in mechanism, grace period, encrypted message storage, and delivery system. Deployed on Ethereum Sepolia testnet as a proof-of-concept."
+    link: "https://github.com/pdroalves/farewell-core"
+    tags: ["Blockchain", "fhEVM", "Solidity", "Privacy", "Smart Contracts"]
+    year: "2024"
+
+  - title: "ChainChat"
+    description: "Encrypted blockchain chat rooms powered by Zama's fhEVM. End-to-end encrypted messaging with wallet-based identity, allow lists, and room management. Fully on-chain chat rooms deployed as smart contracts on Ethereum Sepolia."
+    link: "https://github.com/pdroalves/chainchat"
+    tags: ["Blockchain", "fhEVM", "Next.js", "Encrypted Chat", "Web3"]
+    year: "2024"
+
+  - title: "cuPoly"
+    description: "Cyclotomic polynomial arithmetic library extracted from cuYASHE. CUDA-based implementation for high-performance polynomial operations used in RLWE-based cryptographic schemes. Provides exceptional GPU performance with a simple, maintainable API."
+    link: "https://github.com/pdroalves/cupoly"
+    tags: ["CUDA", "C++", "Polynomial Arithmetic", "RLWE", "Cryptography"]
+    year: "2020"
+
+  - title: "cuYASHE"
+    description: "GPGPU implementation of the leveled fully homomorphic encryption scheme YASHE. Employs CUDA, the Chinese Remainder Theorem and the Fast Fourier Transform to achieve speedups of 6-35x for homomorphic multiplication compared to CPU implementations."
+    link: "https://github.com/cuyashe-library/cuyashe"
+    tags: ["Homomorphic Encryption", "CUDA", "C++", "Cryptography"]
+    year: "2016"
+
+  - title: "Encrypted Database Framework"
+    description: "Framework for searching encrypted databases using order-revealing encryption and homomorphic encryption. Built on top of MongoDB with proof-of-concept implementation of Netflix Grand Prize predicates."
+    link: "#"
+    tags: ["Cryptography", "Database", "Privacy", "MongoDB"]
+    year: "2016"
+
+  - title: "SPOG - GPU Homomorphic Encryption"
+    description: "Efficient implementation of the BFV homomorphic encryption scheme on CUDA using hierarchical Discrete Galois Transform. Achieves up to 3.6x faster homomorphic multiplication than state-of-the-art."
+    link: "#"
+    tags: ["BFV", "CUDA", "GPU", "Homomorphic Encryption"]
+    year: "2021"

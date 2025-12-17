@@ -1,0 +1,34 @@
+links:
+  - name: "GitHub"
+    url: "https://github.com/pdroalves"
+    icon: "github"
+    display: true
+  - name: "LinkedIn"
+    url: "https://www.linkedin.com/in/pdroalves"
+    icon: "linkedin"
+    display: true
+  - name: "ORCID"
+    url: "https://orcid.org/0000-0002-7175-8383"
+    icon: "orcid"
+    display: true
+  - name: "Curriculum Lattes"
+    url: "http://lattes.cnpq.br/2963997438105619"
+    icon: "lattes"
+    display: true
+  - name: "X"
+    url: "https://twitter.com/iampdroalves"
+    icon: "twitter"
+    display: true
+  - name: "Bluesky"
+    url: "https://bsky.app/profile/pdroalves"
+    icon: "bluesky"
+    display: true
+  - name: "Google Scholar"
+    url: "https://scholar.google.com/citations?user=-m1Mj1YAAAAJ&hl=en"
+    icon: "googlescholar"
+    display: true
+  - name: "OpenPGP"
+    url: "https://keys.openpgp.org/search?q=pdroalves@gmail.com"
+    icon: "openpgp"
+    display: true
+

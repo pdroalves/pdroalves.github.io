@@ -1,0 +1,388 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import { fileURLToPath } from 'url';
+
+interface GPGKey {
+  keyId?: string;
+  fingerprint?: string;
+  created?: string;
+  expires?: string;
+  file?: string;
+  email?: string;
+}
+
+interface GPGData {
+  current?: GPGKey;
+  archived?: GPGKey[];
+}
+
+// Get the project root directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
+
+let gpgData: GPGData = {};
+try {
+  const gpgPath = path.join(projectRoot, 'src', 'content', 'gpg.yaml');
+  if (fs.existsSync(gpgPath)) {
+    gpgData = yaml.load(fs.readFileSync(gpgPath, 'utf-8')) as GPGData;
+  }
+} catch (e) {
+  console.error('Error loading gpg.yaml:', e);
+}
+
+// Try to load key files
+function loadKeyFile(filePath: string): string | null {
+  try {
+    if (filePath.startsWith('/')) {
+      filePath = filePath.substring(1);
+    }
+    const fullPath = path.join(projectRoot, 'public', filePath);
+    if (fs.existsSync(fullPath)) {
+      return fs.readFileSync(fullPath, 'utf-8');
+    }
+  } catch (error) {
+    console.error(`Error loading key file ${filePath}:`, error);
+  }
+  return null;
+}
+
+const currentKeyContent = gpgData.current?.file ? loadKeyFile(gpgData.current.file) : null;
+---
+
+<BaseLayout title="GPG Key" description="GPG public key for encrypted communications">
+  <div class="gpg-page">
+    <header class="page-header">
+      <h1>GPG Public Key</h1>
+      <p class="page-description">
+        My GPG public key for encrypted communications. You can import this key to verify my signed messages and send me encrypted emails.
+      </p>
+    </header>
+    
+    {gpgData.current && (
+      <section class="key-section">
+        <h2>Current Key</h2>
+        <div class="key-card">
+          <div class="key-info">
+            <div class="info-row">
+              <span class="info-label">Key ID</span>
+              <code class="info-value">{gpgData.current.keyId}</code>
+            </div>
+            {gpgData.current.fingerprint && (
+              <div class="info-row">
+                <span class="info-label">Fingerprint</span>
+                <div class="fingerprint-row">
+                  <code class="info-value fingerprint">{gpgData.current.fingerprint}</code>
+                  <button class="copy-btn" id="copy-fingerprint" data-value={gpgData.current.fingerprint}>
+                    Copy
+                  </button>
+                </div>
+              </div>
+            )}
+            {gpgData.current.email && (
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">{gpgData.current.email}</span>
+              </div>
+            )}
+            {gpgData.current.created && (
+              <div class="info-row">
+                <span class="info-label">Created</span>
+                <span class="info-value">{new Date(gpgData.current.created).toLocaleDateString()}</span>
+              </div>
+            )}
+            {gpgData.current.expires && (
+              <div class="info-row">
+                <span class="info-label">Expires</span>
+                <span class="info-value">{new Date(gpgData.current.expires).toLocaleDateString()}</span>
+              </div>
+            )}
+          </div>
+          
+          {currentKeyContent ? (
+            <div class="key-content">
+              <details>
+                <summary>View Public Key</summary>
+                <pre><code>{currentKeyContent}</code></pre>
+              </details>
+              <a href={gpgData.current.file} download class="btn btn-primary">
+                Download Key File
+              </a>
+            </div>
+          ) : (
+            <div class="key-warning">
+              <p>Key file not found. Please ensure the key file exists at <code>{gpgData.current.file}</code></p>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+    
+    {gpgData.archived && gpgData.archived.length > 0 && (
+      <section class="key-section">
+        <h2>Archived Keys</h2>
+        <p class="section-note">These are previous keys that are no longer in use but are kept for historical reference.</p>
+        {gpgData.archived.map((key, idx) => {
+          const archivedKeyContent = key.file ? loadKeyFile(key.file) : null;
+          return (
+            <div class="archived-card">
+              <h3>Key {key.keyId}</h3>
+              <div class="key-info">
+                {key.fingerprint && (
+                  <div class="info-row">
+                    <span class="info-label">Fingerprint</span>
+                    <code class="info-value">{key.fingerprint}</code>
+                  </div>
+                )}
+                {key.created && (
+                  <div class="info-row">
+                    <span class="info-label">Created</span>
+                    <span class="info-value">{new Date(key.created).toLocaleDateString()}</span>
+                  </div>
+                )}
+                {key.expires && (
+                  <div class="info-row">
+                    <span class="info-label">Expired</span>
+                    <span class="info-value">{new Date(key.expires).toLocaleDateString()}</span>
+                  </div>
+                )}
+              </div>
+              {archivedKeyContent && (
+                <details class="key-content">
+                  <summary>View Key</summary>
+                  <pre><code>{archivedKeyContent}</code></pre>
+                  <a href={key.file} download class="btn btn-secondary">
+                    Download Key File
+                  </a>
+                </details>
+              )}
+            </div>
+          );
+        })}
+      </section>
+    )}
+    
+    <section class="key-section instructions">
+      <h2>How to Import</h2>
+      <ol>
+        <li>Download the key file above</li>
+        <li>Import it using: <code>gpg --import [key-file]</code></li>
+        <li>Verify the fingerprint matches the one shown above</li>
+        <li>You can now use this key to verify my signatures or send me encrypted emails</li>
+      </ol>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .gpg-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--space-md);
+  }
+
+  .page-description {
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  
+  .key-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .key-section h2 {
+    margin-bottom: var(--space-lg);
+  }
+
+  .section-note {
+    color: var(--color-text-light);
+    font-style: italic;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .key-card,
+  .archived-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-lg);
+  }
+
+  .archived-card {
+    border-left: 3px solid var(--color-text-muted);
+  }
+
+  .archived-card h3 {
+    margin-bottom: var(--space-md);
+  }
+  
+  .key-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: var(--color-text-light);
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+  
+  .info-value {
+    color: var(--color-text);
+  }
+
+  .info-value code,
+  code.info-value {
+    background: var(--color-surface);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+  }
+  
+  .fingerprint-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .fingerprint {
+    word-break: break-all;
+    font-size: 0.85rem;
+  }
+  
+  .copy-btn {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+  }
+  
+  .copy-btn:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+  
+  .key-content {
+    margin-top: var(--space-lg);
+  }
+
+  .key-content summary {
+    cursor: pointer;
+    color: var(--color-text-light);
+    font-weight: 500;
+    padding: var(--space-sm) 0;
+    transition: color var(--transition-fast);
+  }
+
+  .key-content summary:hover {
+    color: var(--color-primary);
+  }
+  
+  .key-content pre {
+    margin: var(--space-md) 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .key-content .btn {
+    margin-top: var(--space-md);
+  }
+
+  .key-warning {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid #fecaca;
+  }
+
+  .key-warning code {
+    background: rgba(220, 38, 38, 0.1);
+    padding: 0.15rem 0.35rem;
+    border-radius: var(--radius-sm);
+  }
+  
+  .instructions {
+    background: var(--gradient-subtle);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+  }
+
+  .instructions h2 {
+    margin-bottom: var(--space-lg);
+  }
+
+  .instructions ol {
+    padding-left: var(--space-lg);
+    line-height: 2;
+  }
+  
+  .instructions code {
+    background: var(--color-background);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .info-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .info-label {
+      min-width: auto;
+    }
+  }
+</style>
+
+<script>
+  const copyBtn = document.getElementById('copy-fingerprint');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const value = copyBtn.getAttribute('data-value');
+      if (value) {
+        await navigator.clipboard.writeText(value);
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 2000);
+      }
+    });
+  }
+</script>

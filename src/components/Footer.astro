@@ -1,0 +1,252 @@
+---
+import { siteConfig } from '../config';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
+
+// Load social links
+let socialLinks: Array<{name: string; url: string; icon: string; display?: boolean}> = [];
+try {
+  const socialPath = path.join(projectRoot, 'src', 'content', 'social.yaml');
+  if (fs.existsSync(socialPath)) {
+    const socialData = yaml.load(fs.readFileSync(socialPath, 'utf-8')) as any;
+    socialLinks = (socialData?.links || []).filter((link: any) => link.display !== false);
+  }
+} catch (e) {
+  console.error('Error loading social.yaml:', e);
+}
+
+// Icon map
+const iconMap: Record<string, string> = {
+  linkedin: '🔗',
+  github: 'github',
+  twitter: 'x',
+  orcid: '🔬',
+  lattes: '📚',
+  googlescholar: '🎓',
+  openpgp: '🔐',
+  bluesky: '🦋',
+};
+---
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">{siteConfig.author}</a>
+        <p class="footer-tagline">PhD in Computer Science</p>
+      </div>
+      
+      <nav class="footer-nav">
+        <div class="footer-section">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/research">Research</a></li>
+            <li><a href="/projects">Projects</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="https://pdroalves.github.io/files/resume_pdroalves.pdf" target="_blank" rel="noopener noreferrer">Resume (PDF)</a></li>
+            <li><a href="/gpg">GPG Key</a></li>
+            <li><a href="https://keys.openpgp.org/search?q=pdroalves@gmail.com" target="_blank" rel="noopener noreferrer">OpenPGP</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Connect</h4>
+          <div class="footer-social">
+            {socialLinks.slice(0, 4).map((link) => {
+              const iconKey = link.icon.toLowerCase();
+              const isGithub = iconKey === 'github';
+              const isTwitter = iconKey === 'twitter';
+              return (
+                <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.name} class="social-link">
+                  {isGithub ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                  ) : isTwitter ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  ) : (
+                    <span>{iconMap[iconKey] || '🔗'}</span>
+                  )}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+    </div>
+    
+    <div class="footer-bottom">
+      <p class="copyright">&copy; {new Date().getFullYear()} {siteConfig.author}. All rights reserved.</p>
+      <p class="built-with">Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-primary);
+    color: white;
+    padding: var(--space-3xl) var(--space-xl) var(--space-xl);
+    margin-top: var(--space-3xl);
+  }
+  
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .footer-main {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-3xl);
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: var(--space-xl);
+  }
+  
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .footer-logo {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  
+  .footer-logo:hover {
+    color: var(--color-accent-light);
+  }
+  
+  .footer-tagline {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+  }
+  
+  .footer-section h4 {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-md);
+  }
+  
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  
+  .footer-section a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color var(--transition-fast);
+  }
+  
+  .footer-section a:hover {
+    color: white;
+  }
+  
+  .footer-social {
+    display: flex;
+    gap: var(--space-sm);
+  }
+  
+  .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    transition: all var(--transition-base);
+  }
+  
+  .social-link:hover {
+    background: var(--color-accent);
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .social-link svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+  
+  .footer-bottom p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .footer-bottom a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+  }
+  
+  .footer-bottom a:hover {
+    color: white;
+  }
+  
+  @media (max-width: 768px) {
+    .footer-main {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+    
+    .footer-nav {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .footer-nav {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

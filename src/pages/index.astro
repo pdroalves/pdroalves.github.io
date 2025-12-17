@@ -1,0 +1,954 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfilePicture from '../components/ProfilePicture.astro';
+import { siteConfig } from '../config';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import MarkdownIt from 'markdown-it';
+import { fileURLToPath } from 'url';
+
+const md = new MarkdownIt();
+
+// Get the project root directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
+
+// Load content files
+let aboutHtml = '';
+let socialLinks: Array<{name: string; url: string; icon: string; display?: boolean}> = [];
+let location = '';
+let education: Array<{degree: string; course?: string; institution: string; year: string; thesis?: string; abstract?: string; link?: string}> = [];
+let featuredPublications: Array<{title: string; year: string; venue: string; category?: string; note?: string; links?: Array<{type: string; url: string}>}> = [];
+let featuredProjects: Array<{title: string; description: string; link: string; tags: string[]; year: string}> = [];
+
+// Load about.md and convert to HTML
+try {
+  const aboutPath = path.join(projectRoot, 'src', 'content', 'about.md');
+  if (fs.existsSync(aboutPath)) {
+    const aboutText = fs.readFileSync(aboutPath, 'utf-8');
+    aboutHtml = md.render(aboutText);
+  }
+} catch (e) {
+  console.error('Error loading about.md:', e);
+}
+
+// Load social links
+try {
+  const socialPath = path.join(projectRoot, 'src', 'content', 'social.yaml');
+  if (fs.existsSync(socialPath)) {
+    const socialData = yaml.load(fs.readFileSync(socialPath, 'utf-8')) as {links?: Array<{name: string; url: string; icon: string; display?: boolean}>};
+    socialLinks = (socialData?.links || []).filter(link => link.display !== false);
+  }
+} catch (e) {
+  console.error('Error loading social.yaml:', e);
+}
+
+// Load location and education from resume
+try {
+  const resumePath = path.join(projectRoot, 'src', 'content', 'resume.yaml');
+  if (fs.existsSync(resumePath)) {
+    const resumeData = yaml.load(fs.readFileSync(resumePath, 'utf-8')) as {
+      personal?: {location?: string};
+      education?: Array<{degree: string; institution: string; year: string; thesis?: string}>;
+    };
+    location = resumeData?.personal?.location || '';
+    education = resumeData?.education || [];
+  }
+} catch (e) {
+  console.error('Error loading resume.yaml:', e);
+}
+
+// Load all publications
+try {
+  const pubPath = path.join(projectRoot, 'src', 'content', 'publications.yaml');
+  if (fs.existsSync(pubPath)) {
+    const pubData = yaml.load(fs.readFileSync(pubPath, 'utf-8')) as any;
+    const conferences = pubData?.conferences || [];
+    const journal = pubData?.journal || [];
+    const preprints = pubData?.preprints || [];
+    const thesis = pubData?.thesis || [];
+    // Combine all publications
+    featuredPublications = [
+      ...conferences.map((p: any) => ({ ...p, category: 'Conference' })),
+      ...journal.map((p: any) => ({ ...p, category: 'Journal' })),
+      ...preprints.map((p: any) => ({ ...p, category: 'Preprint' })),
+      ...thesis.map((p: any) => ({ ...p, category: 'Thesis', venue: p.institution })),
+    ].sort((a, b) => parseInt(b.year) - parseInt(a.year));
+  }
+} catch (e) {
+  console.error('Error loading publications.yaml:', e);
+}
+
+// Load featured projects (get top 2)
+try {
+  const portfolioPath = path.join(projectRoot, 'src', 'content', 'portfolio.yaml');
+  if (fs.existsSync(portfolioPath)) {
+    const portfolioData = yaml.load(fs.readFileSync(portfolioPath, 'utf-8')) as any;
+    featuredProjects = (portfolioData?.projects || []).slice(0, 2);
+  }
+} catch (e) {
+  console.error('Error loading portfolio.yaml:', e);
+}
+
+// Icon mapping for social links
+const iconMap: Record<string, string> = {
+  linkedin: '🔗',
+  github: 'github',
+  twitter: 'x',
+  orcid: '🔬',
+  lattes: '📚',
+  googlescholar: '🎓',
+  openpgp: '🔐',
+  bluesky: '🦋',
+};
+---
+
+<BaseLayout title="Home" description={siteConfig.description}>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-image">
+        <ProfilePicture />
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title">{siteConfig.author}</h1>
+        <p class="hero-subtitle">PhD in Computer Science</p>
+        <p class="hero-tagline">
+          Privacy-preserving computing <span class="dot">·</span> 
+          Homomorphic encryption <span class="dot">·</span> 
+          CUDA / GPGPU
+        </p>
+        {location && (
+          <p class="hero-location">
+            <span class="flag">{location === 'Brazil' ? '🇧🇷' : '📍'}</span>
+            {location}
+          </p>
+        )}
+        
+        <!-- Social Icons -->
+        <div class="hero-social">
+          {socialLinks.slice(0, 5).map((link) => {
+            const iconKey = link.icon.toLowerCase();
+            const isGithub = iconKey === 'github';
+            const isTwitter = iconKey === 'twitter';
+            return (
+              <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.name} class="social-icon-link">
+                {isGithub ? (
+                  <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                ) : isTwitter ? (
+                  <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                ) : (
+                  <span class="social-emoji">{iconMap[iconKey] || '🔗'}</span>
+                )}
+              </a>
+            );
+          })}
+        </div>
+        
+        <!-- CTA Buttons -->
+        <div class="hero-cta">
+          <a href="/research" class="btn btn-primary">View Research</a>
+          <a href="/projects" class="btn btn-secondary">View Projects</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="about-content" set:html={aboutHtml} />
+  </section>
+
+  <!-- Education Section -->
+  {education.length > 0 && (
+    <section class="education-section">
+      <h2 class="section-heading">Education</h2>
+      <div class="education-list">
+        {education.map((edu) => (
+          <article class="education-card">
+            <div class="edu-header">
+              <h3 class="edu-degree">{edu.degree}</h3>
+              <span class="edu-year">{edu.year}</span>
+            </div>
+            <p class="edu-institution">
+              {edu.course && <span class="edu-course">{edu.course}</span>}
+              {edu.course && <span class="edu-separator"> · </span>}
+              {edu.institution}
+            </p>
+            {edu.thesis && (
+              <div class="edu-thesis-section">
+                <p class="edu-thesis-title">
+                  <em>Thesis: {edu.thesis}</em>
+                </p>
+                {edu.abstract && (
+                  <div class="edu-abstract-wrapper">
+                    <p class="edu-abstract" data-expanded="false">{edu.abstract}</p>
+                    <button class="edu-read-more" type="button">Read more</button>
+                  </div>
+                )}
+                {edu.link && (
+                  <a href={edu.link} target="_blank" rel="noopener noreferrer" class="edu-link">
+                    View in Unicamp Repository →
+                  </a>
+                )}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Publications Section -->
+  <section class="publications-section">
+    <h2 class="section-heading">Publications</h2>
+    <p class="section-description">Academic papers, conference proceedings, and research output</p>
+    
+    <div class="publications-list">
+      {featuredPublications.map((pub) => (
+        <article class="publication-card">
+          <div class="pub-header">
+            <span class={`pub-category ${pub.category?.toLowerCase()}`}>{pub.category}</span>
+            <span class="pub-year">{pub.year}</span>
+          </div>
+          <h3 class="pub-title">{pub.title}</h3>
+          <p class="pub-venue">{pub.venue}</p>
+          {pub.note && <span class="pub-note">{pub.note}</span>}
+          {pub.links && pub.links.length > 0 && (
+            <div class="pub-links">
+              {pub.links.map((link) => (
+                link.url !== '#' && link.type !== 'bibtex' && (
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" class="pub-link">
+                    {link.type === 'eprint' ? 'ePrint' : 
+                     link.type === 'journal' ? 'Journal' : 
+                     link.type === 'conference' ? 'Paper' :
+                     link.type === 'paper' ? 'Paper' :
+                     link.type === 'scholar' ? 'Google Scholar' :
+                     link.type === 'github' ? 'GitHub' :
+                     link.type === 'thesis' ? 'Thesis' : link.type} →
+                  </a>
+                )
+              ))}
+              {pub.links.find((l: any) => l.type === 'bibtex' && l.url !== '#') && (
+                <a href={pub.links.find((l: any) => l.type === 'bibtex')?.url} target="_blank" rel="noopener noreferrer" class="pub-link pub-link-bibtex" download>
+                  BibTeX →
+                </a>
+              )}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+    
+    <div class="section-cta">
+      <a href="/research" class="btn btn-secondary">View All Research</a>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="projects-section">
+    <h2 class="section-heading">Projects</h2>
+    <p class="section-description">Open source projects and contributions</p>
+    
+    <div class="projects-grid">
+      {featuredProjects.map((project) => (
+        <article class="project-card">
+          <div class="project-header">
+            <span class="project-type">Project</span>
+            <span class="project-year">{project.year}</span>
+          </div>
+          <h3 class="project-title">{project.title}</h3>
+          <p class="project-description">{project.description}</p>
+          <div class="project-tags">
+            {project.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+          {project.link && project.link !== '#' ? (
+            <a href={project.link} target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub →</a>
+          ) : (
+            <a href="/projects" class="project-link">Learn more →</a>
+          )}
+        </article>
+      ))}
+    </div>
+    
+    <div class="section-cta">
+      <a href="/projects" class="btn btn-secondary">View All Projects</a>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <h2 class="section-heading">Get in Touch</h2>
+    <div class="contact-content">
+      <div class="contact-emails">
+        <a href="mailto:pedro.alves@zama.org" class="contact-email">pedro.alves@zama.org</a>
+        <a href="mailto:pdroalves@gmail.com" class="contact-email">pdroalves@gmail.com</a>
+        <a href="https://pdroalves.github.io/files/resume_pdroalves.pdf" target="_blank" rel="noopener noreferrer" class="contact-email">Download Resume (PDF)</a>
+      </div>
+      <div class="contact-social">
+        {socialLinks.map((link) => {
+          const iconKey = link.icon.toLowerCase();
+          const isGithub = iconKey === 'github';
+          const isTwitter = iconKey === 'twitter';
+          return (
+            <a href={link.url} target="_blank" rel="noopener noreferrer" class="contact-link">
+              {isGithub ? (
+                <svg class="contact-svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              ) : isTwitter ? (
+                <svg class="contact-svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              ) : (
+                <span class="contact-emoji">{iconMap[iconKey] || '🔗'}</span>
+              )}
+              <span>{link.name}</span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero Section */
+  .hero {
+    padding: var(--space-3xl) 0;
+    background: var(--gradient-subtle);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--space-3xl);
+  }
+  
+  .hero-content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-2xl);
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+  }
+  
+  .hero-image {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .hero-image :global(.profile-picture) {
+    margin-bottom: 0;
+  }
+  
+  .hero-image :global(.profile-picture img) {
+    width: 180px;
+    height: 180px;
+    border: 4px solid white;
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .hero-text {
+    text-align: left;
+  }
+  
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    margin-bottom: var(--space-xs);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-sm);
+    font-weight: 500;
+  }
+  
+  .hero-tagline {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-sm);
+  }
+  
+  .hero-tagline .dot {
+    margin: 0 0.35rem;
+    opacity: 0.5;
+  }
+  
+  .hero-location {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .hero-location .flag {
+    font-size: 1.1rem;
+  }
+  
+  .hero-social {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .social-icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-light);
+    transition: all var(--transition-base);
+  }
+  
+  .social-icon-link:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .social-svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .social-emoji {
+    font-size: 1rem;
+  }
+  
+  .hero-cta {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+  
+  /* About Section */
+  .about-section {
+    max-width: 800px;
+    margin: 0 auto var(--space-3xl);
+    padding: var(--space-xl);
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+  
+  .about-content {
+    line-height: 1.8;
+  }
+  
+  .about-content :global(h1) {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-lg);
+    color: var(--color-primary);
+  }
+  
+  .about-content :global(p) {
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+  }
+  
+  .about-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  
+  /* Education Section */
+  .education-section {
+    max-width: 900px;
+    margin: 0 auto var(--space-3xl);
+  }
+  
+  .education-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  
+  .education-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: all var(--transition-base);
+    border-left: 3px solid var(--color-accent);
+  }
+  
+  .education-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-border-light);
+  }
+  
+  .edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-sm);
+    gap: var(--space-md);
+  }
+  
+  .edu-degree {
+    font-size: 1.15rem;
+    margin: 0;
+    color: var(--color-primary);
+    flex: 1;
+  }
+  
+  .edu-year {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .edu-institution {
+    font-size: 1rem;
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .edu-course {
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+  
+  .edu-separator {
+    color: var(--color-text-muted);
+    margin: 0 0.25rem;
+  }
+  
+  .edu-thesis-section {
+    margin-top: var(--space-sm);
+  }
+  
+  .edu-thesis-title {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    font-style: italic;
+    margin-bottom: var(--space-sm);
+    line-height: 1.5;
+  }
+  
+  .edu-abstract-wrapper {
+    position: relative;
+  }
+  
+  .edu-abstract {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin: var(--space-sm) 0;
+    line-height: 1.7;
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+  
+  .edu-abstract[data-expanded="true"] {
+    display: block;
+    -webkit-line-clamp: unset;
+  }
+  
+  .edu-read-more {
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: var(--space-xs) 0;
+    margin-top: var(--space-xs);
+    transition: color var(--transition-fast);
+    text-align: left;
+  }
+  
+  .edu-read-more:hover {
+    color: var(--color-accent-light);
+  }
+  
+  .edu-abstract-wrapper[data-expanded="true"] .edu-read-more {
+    display: none;
+  }
+  
+  .edu-link {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    font-style: normal;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+  }
+  
+  .edu-link:hover {
+    color: var(--color-accent-light);
+  }
+  
+  /* Section Common Styles */
+  .publications-section,
+  .projects-section {
+    margin-bottom: var(--space-3xl);
+  }
+  
+  .section-heading {
+    text-align: center;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .section-description {
+    text-align: center;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-2xl);
+  }
+  
+  .section-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-xl);
+  }
+
+  /* Publications Section */
+  .publications-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+  
+  .publication-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    transition: all var(--transition-base);
+  }
+  
+  .publication-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-border-light);
+  }
+  
+  .pub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .pub-category {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+  }
+
+  .pub-category.conference {
+    background: #e8f4fd;
+    color: #0066cc;
+  }
+
+  .pub-category.journal {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  .pub-category.preprint {
+    background: #f3e8ff;
+    color: #7c3aed;
+  }
+
+  .pub-category.thesis {
+    background: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .pub-year {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+  
+  .pub-title {
+    font-size: 1.05rem;
+    margin-bottom: var(--space-xs);
+    line-height: 1.4;
+  }
+  
+  .pub-venue {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-sm);
+  }
+
+  .pub-note {
+    display: inline-block;
+    background: #fef3c7;
+    color: #b45309;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .pub-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .pub-link {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    transition: color var(--transition-fast);
+  }
+
+  .pub-link:hover {
+    color: var(--color-accent-light);
+  }
+
+  .pub-link-bibtex {
+    background: var(--color-primary);
+    color: white;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-primary);
+  }
+
+  .pub-link-bibtex:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+  }
+
+  /* Projects Section */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-lg);
+  }
+  
+  .project-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .project-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    border-color: var(--color-border-light);
+  }
+  
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .project-type {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background: #f0fdf4;
+    color: #16a34a;
+  }
+  
+  .project-year {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+  
+  .project-title {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-sm);
+    line-height: 1.3;
+  }
+  
+  .project-description {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: var(--space-md);
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+  
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+  }
+  
+  .project-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    transition: color var(--transition-fast);
+  }
+  
+  .project-link:hover {
+    color: var(--color-accent-light);
+  }
+  
+  /* Contact Section */
+  .contact-section {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-xl);
+    background: var(--gradient-subtle);
+    border-radius: var(--radius-xl);
+  }
+  
+  .contact-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .contact-emails {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+  }
+  
+  .contact-email {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.95rem;
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    transition: all var(--transition-base);
+  }
+  
+  .contact-email:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  
+  .contact-social {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm);
+  }
+  
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    color: var(--color-text);
+    transition: all var(--transition-base);
+  }
+  
+  .contact-link:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+  
+  .contact-svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .contact-emoji {
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero {
+      padding: var(--space-xl) 0;
+    }
+    
+    .hero-content {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: var(--space-lg);
+    }
+    
+    .hero-text {
+      text-align: center;
+    }
+    
+    .hero-location {
+      justify-content: center;
+    }
+    
+    .hero-social {
+      justify-content: center;
+    }
+    
+    .hero-cta {
+      justify-content: center;
+    }
+    
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .contact-emails {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const readMoreButtons = document.querySelectorAll('.edu-read-more');
+    
+    readMoreButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const wrapper = button.closest('.edu-abstract-wrapper');
+        const abstract = wrapper?.querySelector('.edu-abstract');
+        
+        if (wrapper && abstract) {
+          const isExpanded = abstract.getAttribute('data-expanded') === 'true';
+          abstract.setAttribute('data-expanded', (!isExpanded).toString());
+          wrapper.setAttribute('data-expanded', (!isExpanded).toString());
+          button.textContent = isExpanded ? 'Read more' : 'Read less';
+        }
+      });
+    });
+  });
+</script>

@@ -1,31 +1,130 @@
-A Github Pages template for academic websites. This was forked (then detached) by [Stuart Geiger](https://github.com/staeiou) from the [Minimal Mistakes Jekyll Theme](https://mmistakes.github.io/minimal-mistakes/), which is © 2016 Michael Rose and released under the MIT License. See LICENSE.md.
+# Personal Website
 
-I think I've got things running smoothly and fixed some major bugs, but feel free to file issues or make pull requests if you want to improve the generic template / theme.
+A modern, maintainable personal website built with Astro and deployed on GitHub Pages.
 
-### Note: if you are using this repo and now get a notification about a security vulnerability, delete the Gemfile.lock file. 
+## Features
 
-# Instructions
+- **Modern Design**: Clean, responsive layout with smooth animations
+- **Easy Content Updates**: All content managed through YAML and Markdown files
+- **GitHub Pages Ready**: Automatic deployment via GitHub Actions
+- **Fully Customizable**: Easy to update colors, content, and structure
 
-1. Register a GitHub account if you don't have one and confirm your e-mail (required!)
-1. Fork [this repository](https://github.com/academicpages/academicpages.github.io) by clicking the "fork" button in the top right. 
-1. Go to the repository's settings (rightmost item in the tabs that start with "Code", should be below "Unwatch"). Rename the repository "[your GitHub username].github.io", which will also be your website's URL.
-1. Set site-wide configuration and create content & metadata (see below -- also see [this set of diffs](http://archive.is/3TPas) showing what files were changed to set up [an example site](https://getorg-testacct.github.io) for a user with the username "getorg-testacct")
-1. Upload any files (like PDFs, .zip files, etc.) to the files/ directory. They will appear at https://[your GitHub username].github.io/files/example.pdf.  
-1. Check status by going to the repository settings, in the "GitHub pages" section
-1. (Optional) Use the Jupyter notebooks or python scripts in the `markdown_generator` folder to generate markdown files for publications and talks from a TSV file.
+## Project Structure
 
-See more info at https://academicpages.github.io/
+```
+PersonalSite/
+├── src/
+│   ├── components/      # Reusable UI components
+│   ├── layouts/         # Page layouts
+│   ├── pages/           # Routes (auto-generated)
+│   ├── content/         # Content files (YAML/Markdown)
+│   └── config.ts        # Site configuration
+├── public/              # Static assets
+└── .github/workflows/   # GitHub Actions
+```
 
-## To run locally (not on GitHub Pages, to serve on your own computer)
+## Getting Started
 
-1. Clone the repository and made updates as detailed above
-1. Make sure you have ruby-dev, bundler, and nodejs installed: `sudo apt install ruby-dev ruby-bundler nodejs`
-1. Run `bundle clean` to clean up the directory (no need to run `--force`)
-1. Run `bundle install` to install ruby dependencies. If you get errors, delete Gemfile.lock and try again.
-1. Run `bundle exec jekyll liveserve` to generate the HTML and serve it from `localhost:4000` the local server will automatically rebuild and refresh the pages on change.
+### Development
 
-# Changelog -- bugfixes and enhancements
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-There is one logistical issue with a ready-to-fork template theme like academic pages that makes it a little tricky to get bug fixes and updates to the core theme. If you fork this repository, customize it, then pull again, you'll probably get merge conflicts. If you want to save your various .yml configuration files and markdown files, you can delete the repository and fork it again. Or you can manually patch. 
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-To support this, all changes to the underlying code appear as a closed issue with the tag 'code change' -- get the list [here](https://github.com/academicpages/academicpages.github.io/issues?q=is%3Aclosed%20is%3Aissue%20label%3A%22code%20change%22%20). Each issue thread includes a comment linking to the single commit or a diff across multiple commits, so those with forked repositories can easily identify what they need to patch.
+3. Open [http://localhost:4321](http://localhost:4321) in your browser
+
+### Building
+
+Build the site for production:
+```bash
+npm run build
+```
+
+Preview the production build:
+```bash
+npm run preview
+```
+
+## Content Management
+
+### Social Links
+
+Edit `src/content/social.yaml` to add, update, or remove social links:
+
+```yaml
+links:
+  - name: "LinkedIn"
+    url: "https://linkedin.com/in/yourprofile"
+    icon: "linkedin"
+    display: true
+```
+
+### About Text
+
+Edit `src/content/about.md` to update your about section.
+
+### Resume
+
+Edit `src/content/resume.yaml` to update your resume information.
+
+### Publications
+
+Edit `src/content/publications.yaml` to add or update publications.
+
+### Talks
+
+Edit `src/content/talks.yaml` to add or update talks.
+
+### GPG Keys
+
+1. Export your GPG public key:
+   ```bash
+   gpg --armor --export YOUR_KEY_ID > public/gpg/current.asc
+   ```
+
+2. Update `src/content/gpg.yaml` with key information.
+
+### Articles
+
+Create new articles by adding Markdown files to `src/content/articles/`:
+
+```markdown
+---
+title: "My Article"
+description: "Article description"
+date: "2024-01-01"
+tags: ["tag1", "tag2"]
+---
+
+Your article content here...
+```
+
+## Deployment
+
+The site is configured to automatically deploy to GitHub Pages when you push to the `main` branch.
+
+1. Push your changes to GitHub
+2. GitHub Actions will automatically build and deploy the site
+3. Your site will be available at your GitHub Pages URL
+
+### Custom Domain
+
+The `public/CNAME` file is configured for `www.iampedro.com`. Update it if you need a different domain.
+
+## Configuration
+
+Edit `src/config.ts` to update:
+- Site title and description
+- Author information
+- Gravatar email
+- Color scheme
+
+## License
+
+MIT
