@@ -7,14 +7,22 @@ personal:
 
 education:
   - degree: "PhD in Computer Science"
+    course: "Computer Science"
+    institution: "Institute of Computing, University of Campinas"
+    year: "2023"
+    thesis: "Cryptographic engineering of privacy-preserving algorithms"
+    abstract: "This is a compilation thesis composed of published or under revision papers that explore different aspects of privacy-preserving computing, such as the efficient implementation of primitives, protocols, and applications. Our work offers a framework for an always-encrypted database, which can store ciphertexts and answer encrypted queries without decryption. In the same direction, we also study the case of large-scale data collection from smart meters. On the other hand, we also present papers that explore the efficient implementation of the arithmetic used by modern fully homomorphic encryption schemes, such as BFV and CKKS. We experiment with different methods targeting the CUDA architecture and show how the cryptosystems can be accelerated through the proper choice for the data structure, locality, and algorithm used on the polynomial multiplication."
+    link: "https://hdl.handle.net/20.500.12733/9821"
+  - degree: "Master's Degree"
+    course: "Computer Science"
     institution: "Institute of Computing, University of Campinas"
     year: "2016"
     thesis: "Efficient GPGPU implementation of the Leveled Fully Homomorphic Encryption scheme YASHE"
-  - degree: "Master's Degree"
-    institution: "University of Campinas"
-    year: "2012"
+    abstract: "This work investigates strategies to efficiently implement the leveled fully homomorphic encryption scheme YASHE. It employs the CUDA platform to provide parallel processing capabilities and the Chinese Remainder Theorem to replace expensive big integer arithmetic by simpler instructions natively supported in hardware. Moreover, this work offers a comparison between the Fast Fourier Transform and the Number-Theoretic Transform for reducing the complexity of polynomial multiplication. As a result of this research, the cuYASHE library was developed and made available to the community. When compared with the state-of-the-art implementation in CPU, GPU and FPGA, it shows speed-ups for all operations. In particular, there was an improvement between 6 and 35 times for polynomial multiplication. This operation is performance-critical for evaluating any function over encrypted data, demonstrating that GPUs are an appropriate technology for bootstrapping privacy-preserving cloud computing environments."
+    link: "https://hdl.handle.net/20.500.12733/1629248"
   - degree: "Bachelor's Degree"
-    institution: "University of Campinas"
+    course: "Applied Mathematics"
+    institution: "Institute of Mathematics, Statistics and Scientific Computing (IMECC), University of Campinas"
     year: "2010"
 
 experience:

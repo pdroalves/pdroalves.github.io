@@ -1,5 +1,5 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
@@ -53,83 +53,100 @@ function loadKeyFile(filePath: string): string | null {
 const currentKeyContent = gpgData.current?.file ? loadKeyFile(gpgData.current.file) : null;
 ---
 
-<PageLayout title="GPG Public Key">
+<BaseLayout title="GPG Key" description="GPG public key for encrypted communications">
   <div class="gpg-page">
-    <h1>GPG Public Key</h1>
-    <p class="intro">My GPG public key for encrypted communications. You can import this key to verify my signed messages and send me encrypted emails.</p>
+    <header class="page-header">
+      <h1>GPG Public Key</h1>
+      <p class="page-description">
+        My GPG public key for encrypted communications. You can import this key to verify my signed messages and send me encrypted emails.
+      </p>
+    </header>
     
     {gpgData.current && (
-      <section class="current-key">
+      <section class="key-section">
         <h2>Current Key</h2>
-        <div class="key-info">
-          <div class="info-item">
-            <strong>Key ID:</strong> <code>{gpgData.current.keyId}</code>
+        <div class="key-card">
+          <div class="key-info">
+            <div class="info-row">
+              <span class="info-label">Key ID</span>
+              <code class="info-value">{gpgData.current.keyId}</code>
+            </div>
+            {gpgData.current.fingerprint && (
+              <div class="info-row">
+                <span class="info-label">Fingerprint</span>
+                <div class="fingerprint-row">
+                  <code class="info-value fingerprint">{gpgData.current.fingerprint}</code>
+                  <button class="copy-btn" id="copy-fingerprint" data-value={gpgData.current.fingerprint}>
+                    Copy
+                  </button>
+                </div>
+              </div>
+            )}
+            {gpgData.current.email && (
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">{gpgData.current.email}</span>
+              </div>
+            )}
+            {gpgData.current.created && (
+              <div class="info-row">
+                <span class="info-label">Created</span>
+                <span class="info-value">{new Date(gpgData.current.created).toLocaleDateString()}</span>
+              </div>
+            )}
+            {gpgData.current.expires && (
+              <div class="info-row">
+                <span class="info-label">Expires</span>
+                <span class="info-value">{new Date(gpgData.current.expires).toLocaleDateString()}</span>
+              </div>
+            )}
           </div>
-          {gpgData.current.fingerprint && (
-            <div class="info-item">
-              <strong>Fingerprint:</strong> 
-              <code class="fingerprint" id="current-fingerprint">{gpgData.current.fingerprint}</code>
-              <button class="copy-btn" onclick={`navigator.clipboard.writeText('${gpgData.current.fingerprint}').then(() => alert('Fingerprint copied!'))`}>
-                📋 Copy
-              </button>
+          
+          {currentKeyContent ? (
+            <div class="key-content">
+              <details>
+                <summary>View Public Key</summary>
+                <pre><code>{currentKeyContent}</code></pre>
+              </details>
+              <a href={gpgData.current.file} download class="btn btn-primary">
+                Download Key File
+              </a>
             </div>
-          )}
-          {gpgData.current.email && (
-            <div class="info-item">
-              <strong>Email:</strong> {gpgData.current.email}
-            </div>
-          )}
-          {gpgData.current.created && (
-            <div class="info-item">
-              <strong>Created:</strong> {new Date(gpgData.current.created).toLocaleDateString()}
-            </div>
-          )}
-          {gpgData.current.expires && (
-            <div class="info-item">
-              <strong>Expires:</strong> {new Date(gpgData.current.expires).toLocaleDateString()}
+          ) : (
+            <div class="key-warning">
+              <p>Key file not found. Please ensure the key file exists at <code>{gpgData.current.file}</code></p>
             </div>
           )}
         </div>
-        
-        {currentKeyContent ? (
-          <div class="key-content">
-            <h3>Public Key</h3>
-            <pre><code>{currentKeyContent}</code></pre>
-            <a href={gpgData.current.file} download class="download-btn">
-              📥 Download Key File
-            </a>
-          </div>
-        ) : (
-          <div class="key-content">
-            <p class="warning">Key file not found. Please ensure the key file exists at <code>{gpgData.current.file}</code></p>
-          </div>
-        )}
       </section>
     )}
     
     {gpgData.archived && gpgData.archived.length > 0 && (
-      <section class="archived-keys">
+      <section class="key-section">
         <h2>Archived Keys</h2>
-        <p class="note">These are previous keys that are no longer in use but are kept for historical reference.</p>
+        <p class="section-note">These are previous keys that are no longer in use but are kept for historical reference.</p>
         {gpgData.archived.map((key, idx) => {
           const archivedKeyContent = key.file ? loadKeyFile(key.file) : null;
           return (
-            <div class="archived-key" key={`archived-${idx}`}>
+            <div class="archived-card">
               <h3>Key {key.keyId}</h3>
               <div class="key-info">
                 {key.fingerprint && (
-                  <div class="info-item">
-                    <strong>Fingerprint:</strong> <code>{key.fingerprint}</code>
+                  <div class="info-row">
+                    <span class="info-label">Fingerprint</span>
+                    <code class="info-value">{key.fingerprint}</code>
                   </div>
                 )}
                 {key.created && (
-                  <div class="info-item">
-                    <strong>Created:</strong> {new Date(key.created).toLocaleDateString()}
+                  <div class="info-row">
+                    <span class="info-label">Created</span>
+                    <span class="info-value">{new Date(key.created).toLocaleDateString()}</span>
                   </div>
                 )}
                 {key.expires && (
-                  <div class="info-item">
-                    <strong>Expired:</strong> {new Date(key.expires).toLocaleDateString()}
+                  <div class="info-row">
+                    <span class="info-label">Expired</span>
+                    <span class="info-value">{new Date(key.expires).toLocaleDateString()}</span>
                   </div>
                 )}
               </div>
@@ -137,8 +154,8 @@ const currentKeyContent = gpgData.current?.file ? loadKeyFile(gpgData.current.fi
                 <details class="key-content">
                   <summary>View Key</summary>
                   <pre><code>{archivedKeyContent}</code></pre>
-                  <a href={key.file} download class="download-btn">
-                    📥 Download Key File
+                  <a href={key.file} download class="btn btn-secondary">
+                    Download Key File
                   </a>
                 </details>
               )}
@@ -148,7 +165,7 @@ const currentKeyContent = gpgData.current?.file ? loadKeyFile(gpgData.current.fi
       </section>
     )}
     
-    <section class="instructions">
+    <section class="key-section instructions">
       <h2>How to Import</h2>
       <ol>
         <li>Download the key file above</li>
@@ -158,131 +175,214 @@ const currentKeyContent = gpgData.current?.file ? loadKeyFile(gpgData.current.fi
       </ol>
     </section>
   </div>
-</PageLayout>
+</BaseLayout>
 
 <style>
   .gpg-page {
-    max-width: 1000px;
+    max-width: 800px;
+    margin: 0 auto;
   }
-  
-  .intro {
-    font-size: 1.1rem;
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--space-md);
+  }
+
+  .page-description {
     color: var(--color-text-light);
-    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
   }
   
-  .current-key, .archived-keys, .instructions {
-    margin-bottom: 3rem;
-    padding: 2rem;
-    background: #f9f9f9;
-    border-radius: 8px;
+  .key-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .key-section h2 {
+    margin-bottom: var(--space-lg);
+  }
+
+  .section-note {
+    color: var(--color-text-light);
+    font-style: italic;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .key-card,
+  .archived-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-lg);
+  }
+
+  .archived-card {
+    border-left: 3px solid var(--color-text-muted);
+  }
+
+  .archived-card h3 {
+    margin-bottom: var(--space-md);
   }
   
   .key-info {
-    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
   }
   
-  .info-item {
-    margin: 0.75rem 0;
+  .info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: var(--color-text-light);
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+  
+  .info-value {
+    color: var(--color-text);
+  }
+
+  .info-value code,
+  code.info-value {
+    background: var(--color-surface);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+  }
+  
+  .fingerprint-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-sm);
     flex-wrap: wrap;
   }
-  
-  .info-item code {
-    background: #e8e8e8;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-  }
-  
+
   .fingerprint {
-    font-size: 0.9rem;
     word-break: break-all;
+    font-size: 0.85rem;
   }
   
   .copy-btn {
-    background: var(--color-secondary);
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    font-size: 0.85rem;
-    transition: background 0.3s ease;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
   }
   
   .copy-btn:hover {
     background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
   }
   
   .key-content {
-    margin-top: 1.5rem;
+    margin-top: var(--space-lg);
+  }
+
+  .key-content summary {
+    cursor: pointer;
+    color: var(--color-text-light);
+    font-weight: 500;
+    padding: var(--space-sm) 0;
+    transition: color var(--transition-fast);
+  }
+
+  .key-content summary:hover {
+    color: var(--color-primary);
   }
   
   .key-content pre {
-    background: #2d2d2d;
-    color: #f8f8f2;
-    padding: 1rem;
-    border-radius: 4px;
-    overflow-x: auto;
-    max-height: 400px;
+    margin: var(--space-md) 0;
+    max-height: 300px;
     overflow-y: auto;
   }
-  
-  .key-content code {
-    background: none;
-    color: inherit;
-    padding: 0;
+
+  .key-content .btn {
+    margin-top: var(--space-md);
+  }
+
+  .key-warning {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid #fecaca;
+  }
+
+  .key-warning code {
+    background: rgba(220, 38, 38, 0.1);
+    padding: 0.15rem 0.35rem;
+    border-radius: var(--radius-sm);
   }
   
-  .download-btn {
-    display: inline-block;
-    margin-top: 1rem;
-    padding: 0.75rem 1.5rem;
-    background: var(--color-primary);
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: 500;
-    transition: background 0.3s ease;
+  .instructions {
+    background: var(--gradient-subtle);
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
   }
-  
-  .download-btn:hover {
-    background: var(--color-secondary);
+
+  .instructions h2 {
+    margin-bottom: var(--space-lg);
   }
-  
-  .archived-key {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: white;
-    border-radius: 4px;
-    border-left: 4px solid var(--color-text-light);
-  }
-  
-  .note {
-    color: var(--color-text-light);
-    font-style: italic;
-    margin-bottom: 1rem;
-  }
-  
-  .warning {
-    color: var(--color-accent);
-    padding: 1rem;
-    background: #ffe6e6;
-    border-radius: 4px;
-  }
-  
+
   .instructions ol {
+    padding-left: var(--space-lg);
     line-height: 2;
-    padding-left: 1.5rem;
   }
   
   .instructions code {
-    background: #f4f4f4;
-    padding: 0.2rem 0.4rem;
-    border-radius: 3px;
+    background: var(--color-background);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .info-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .info-label {
+      min-width: auto;
+    }
   }
 </style>
 
+<script>
+  const copyBtn = document.getElementById('copy-fingerprint');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const value = copyBtn.getAttribute('data-value');
+      if (value) {
+        await navigator.clipboard.writeText(value);
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 2000);
+      }
+    });
+  }
+</script>

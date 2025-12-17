@@ -1,0 +1,529 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '../..');
+
+interface Publication {
+  year: string;
+  title: string;
+  venue: string;
+  abstract?: string;
+  note?: string;
+  institution?: string;
+  type?: string;
+  links?: Array<{type: string; url: string}>;
+}
+
+interface Talk {
+  title: string;
+  date: string;
+  venue: string;
+  location: string;
+  type: string;
+  link?: string;
+}
+
+let publications: {
+  preprints: Publication[];
+  journal: Publication[];
+  conferences: Publication[];
+  thesis: Publication[];
+} = { preprints: [], journal: [], conferences: [], thesis: [] };
+
+let talks: Talk[] = [];
+
+// Load publications
+try {
+  const pubPath = path.join(projectRoot, 'src', 'content', 'publications.yaml');
+  if (fs.existsSync(pubPath)) {
+    const pubData = yaml.load(fs.readFileSync(pubPath, 'utf-8')) as any;
+    publications = {
+      preprints: pubData?.preprints || [],
+      journal: pubData?.journal || [],
+      conferences: pubData?.conferences || [],
+      thesis: pubData?.thesis || [],
+    };
+  }
+} catch (e) {
+  console.error('Error loading publications.yaml:', e);
+}
+
+// Load talks
+try {
+  const talksPath = path.join(projectRoot, 'src', 'content', 'talks.yaml');
+  if (fs.existsSync(talksPath)) {
+    const talksData = yaml.load(fs.readFileSync(talksPath, 'utf-8')) as any;
+    talks = talksData?.talks || [];
+  }
+} catch (e) {
+  console.error('Error loading talks.yaml:', e);
+}
+
+// Combine all publications for display
+const allPublications = [
+  ...publications.conferences.map(p => ({ ...p, category: 'Conference' })),
+  ...publications.journal.map(p => ({ ...p, category: 'Journal' })),
+  ...publications.preprints.map(p => ({ ...p, category: 'Preprint' })),
+  ...publications.thesis.map(p => ({ ...p, category: 'Thesis' })),
+].sort((a, b) => parseInt(b.year) - parseInt(a.year));
+
+// Format date for talks
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function getYear(dateStr: string): string {
+  return new Date(dateStr).getFullYear().toString();
+}
+---
+
+<BaseLayout title="Research" description="Publications, talks, and academic work">
+  <div class="research-page">
+    <header class="page-header">
+      <h1>Research</h1>
+      <p class="page-description">
+        My academic work focuses on privacy-preserving technologies, homomorphic encryption, 
+        and efficient GPU implementations of cryptographic schemes.
+      </p>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="publications">Publications</button>
+      <button class="tab-btn" data-tab="talks">Talks</button>
+    </div>
+
+    <!-- Publications Tab -->
+    <section class="tab-content active" id="publications">
+      <div class="publications-list">
+        {allPublications.map((pub) => (
+          <article class="publication-card">
+            <div class="pub-header">
+              <span class={`pub-category ${pub.category.toLowerCase()}`}>{pub.category}</span>
+              <span class="pub-year">{pub.year}</span>
+            </div>
+            <h3 class="pub-title">{pub.title}</h3>
+            <p class="pub-venue">
+              {pub.institution || pub.venue}
+              {pub.type && <span class="pub-type"> — {pub.type}</span>}
+            </p>
+            {pub.note && <p class="pub-note">{pub.note}</p>}
+            {pub.abstract && (
+              <details class="pub-abstract">
+                <summary>Abstract</summary>
+                <p>{pub.abstract}</p>
+              </details>
+            )}
+            {pub.links && pub.links.length > 0 && (
+              <div class="pub-links">
+                {pub.links.map((link) => (
+                  link.url !== '#' && link.type !== 'bibtex' && (
+                    <a href={link.url} target="_blank" rel="noopener noreferrer" class="pub-link">
+                      {link.type === 'eprint' ? 'ePrint' : 
+                       link.type === 'journal' ? 'Journal' : 
+                       link.type === 'conference' ? 'Conference' :
+                       link.type === 'paper' ? 'Paper' :
+                       link.type === 'scholar' ? 'Google Scholar' :
+                       link.type === 'github' ? 'GitHub' :
+                       link.type === 'thesis' ? 'Thesis' : link.type}
+                      <svg class="link-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z" clip-rule="evenodd" />
+                      </svg>
+                    </a>
+                  )
+                ))}
+                {pub.links.find((l: any) => l.type === 'bibtex' && l.url !== '#') && (
+                  <a href={pub.links.find((l: any) => l.type === 'bibtex')?.url} target="_blank" rel="noopener noreferrer" class="pub-link pub-link-bibtex" download>
+                    BibTeX
+                    <svg class="link-icon" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
+                      <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Talks Tab -->
+    <section class="tab-content" id="talks">
+      <div class="talks-list">
+        {talks.map((talk) => (
+          <article class="talk-card">
+            <div class="talk-header">
+              <span class={`talk-type ${talk.type}`}>{talk.type}</span>
+              <span class="talk-date">{formatDate(talk.date)}</span>
+            </div>
+            <h3 class="talk-title">{talk.title}</h3>
+            <p class="talk-venue">{talk.venue}</p>
+            <p class="talk-location">📍 {talk.location}</p>
+            {talk.link && talk.link !== '#' && (
+              <a href={talk.link} target="_blank" rel="noopener noreferrer" class="talk-link">
+                View slides →
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .research-page {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page-header h1 {
+    margin-bottom: var(--space-md);
+  }
+
+  .page-description {
+    color: var(--color-text-light);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Tab Navigation */
+  .tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-md);
+  }
+
+  .tab-btn {
+    padding: var(--space-sm) var(--space-xl);
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-light);
+    cursor: pointer;
+    position: relative;
+    transition: color var(--transition-fast);
+  }
+
+  .tab-btn:hover {
+    color: var(--color-primary);
+  }
+
+  .tab-btn.active {
+    color: var(--color-primary);
+  }
+
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: calc(-1 * var(--space-md) - 1px);
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-accent);
+    border-radius: 1px;
+  }
+
+  /* Tab Content */
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Publications */
+  .publications-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .publication-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: all var(--transition-base);
+  }
+
+  .publication-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-border-light);
+  }
+
+  .pub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+  }
+
+  .pub-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+  }
+
+  .pub-category.conference {
+    background: #e8f4fd;
+    color: #0066cc;
+  }
+
+  .pub-category.journal {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  .pub-category.preprint {
+    background: #f3e8ff;
+    color: #7c3aed;
+  }
+
+  .pub-category.thesis {
+    background: #f0fdf4;
+    color: #16a34a;
+  }
+
+  .pub-year {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .pub-title {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-sm);
+    line-height: 1.4;
+  }
+
+  .pub-venue {
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .pub-type {
+    font-style: italic;
+  }
+
+  .pub-note {
+    display: inline-block;
+    background: #fef3c7;
+    color: #b45309;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+  }
+
+  .pub-abstract {
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+
+  .pub-abstract summary {
+    cursor: pointer;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+  }
+
+  .pub-abstract summary:hover {
+    color: var(--color-primary);
+  }
+
+  .pub-abstract p {
+    margin-top: var(--space-sm);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-text);
+    padding-left: var(--space-md);
+    border-left: 2px solid var(--color-border);
+  }
+
+  .pub-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+  }
+
+  .pub-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text);
+    transition: all var(--transition-fast);
+  }
+
+  .pub-link:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+
+  .link-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .pub-link-bibtex {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+
+  .pub-link-bibtex:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+  }
+
+  /* Talks */
+  .talks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .talk-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: all var(--transition-base);
+  }
+
+  .talk-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-border-light);
+  }
+
+  .talk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+  }
+
+  .talk-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+  }
+
+  .talk-type.conference {
+    background: #e8f4fd;
+    color: #0066cc;
+  }
+
+  .talk-type.workshop {
+    background: #f0fdf4;
+    color: #16a34a;
+  }
+
+  .talk-date {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .talk-title {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-sm);
+    line-height: 1.4;
+  }
+
+  .talk-venue {
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: var(--space-xs);
+  }
+
+  .talk-location {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .talk-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+
+  .talk-link:hover {
+    color: var(--color-accent-light);
+  }
+
+  @media (max-width: 768px) {
+    .tab-btn {
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<script>
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+      
+      // Update buttons
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Update content
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === targetTab) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
