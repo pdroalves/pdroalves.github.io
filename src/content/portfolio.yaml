@@ -1,4 +1,4 @@
-projects:
+featured:
   - title: "TFHE-rs"
     description: "Pure Rust implementation of TFHE for boolean and integer arithmetics over encrypted data. Core cryptographic library with Rust, C, and WASM APIs. Contributor to this major open-source project by Zama, implementing programmable bootstrapping and advanced FHE features."
     link: "https://github.com/zama-ai/tfhe-rs"
@@ -6,17 +6,30 @@ projects:
     year: "2022"
 
   - title: "Farewell"
-    description: "Decentralized application (dApp) for posthumous encrypted messages using smart contracts on fhEVM. Features check-in mechanism, grace period, encrypted message storage, and delivery system. Deployed on Ethereum Sepolia testnet as a proof-of-concept."
+    description: "Decentralized application (dApp) for posthumous encrypted messages using smart contracts on FHEVM. Features check-in mechanism, grace period, encrypted message storage, and delivery system. Deployed on Ethereum Sepolia testnet as a proof-of-concept."
     link: "https://github.com/pdroalves/farewell-core"
-    tags: ["Blockchain", "fhEVM", "Solidity", "Privacy", "Smart Contracts"]
+    tags: ["Blockchain", "FHEVM", "Solidity", "Privacy", "Smart Contracts"]
     year: "2024"
 
   - title: "ChainChat"
-    description: "Encrypted blockchain chat rooms powered by Zama's fhEVM. End-to-end encrypted messaging with wallet-based identity, allow lists, and room management. Fully on-chain chat rooms deployed as smart contracts on Ethereum Sepolia."
+    description: "Encrypted blockchain chat rooms powered by Zama's FHEVM. End-to-end encrypted messaging with wallet-based identity, allow lists, and room management. Fully on-chain chat rooms deployed as smart contracts on Ethereum Sepolia."
     link: "https://github.com/pdroalves/chainchat"
-    tags: ["Blockchain", "fhEVM", "Next.js", "Encrypted Chat", "Web3"]
+    tags: ["Blockchain", "FHEVM", "Next.js", "Encrypted Chat", "Web3"]
     year: "2024"
 
+  - title: "OhMyCriterion"
+    description: "Shell tool that parses Criterion.rs benchmark output under target/criterion/ and prints latency, throughput, confidence intervals, and regression deltas in color-coded terminal tables—optional JSON export and filtering for Rust performance workflows."
+    link: "https://github.com/pdroalves/OhMyCriterion"
+    tags: ["Rust", "Benchmarking", "Shell", "Criterion.rs"]
+    year: "2026"
+
+  - title: "FHE-AES on GPU"
+    description: "GPU-accelerated AES-128 on fully homomorphic ciphertexts using CUDA and TFHE-rs: full 10-round pipeline (SubBytes via Boyar–Peralta S-box, ShiftRows, MixColumns, key expansion) with multi-GPU support and batch evaluation—plaintext is never decrypted during the homomorphic computation."
+    link: "https://github.com/pdroalves/fhe-aes-on-gpu-cpp"
+    tags: ["CUDA", "C++", "TFHE", "AES", "Homomorphic Encryption"]
+    year: "2025"
+
+others:
   - title: "cuPoly"
     description: "Cyclotomic polynomial arithmetic library extracted from cuYASHE. CUDA-based implementation for high-performance polynomial operations used in RLWE-based cryptographic schemes. Provides exceptional GPU performance with a simple, maintainable API."
     link: "https://github.com/pdroalves/cupoly"
@@ -31,13 +44,30 @@ projects:
 
   - title: "Encrypted Database Framework"
     description: "Framework for searching encrypted databases using order-revealing encryption and homomorphic encryption. Built on top of MongoDB with proof-of-concept implementation of Netflix Grand Prize predicates."
-    link: "#"
+    link: "https://github.com/pdroalves/encrypted-mongodb"
     tags: ["Cryptography", "Database", "Privacy", "MongoDB"]
     year: "2016"
 
-  - title: "SPOG - GPU Homomorphic Encryption"
+  - title: "SPOG - GPU-accelerated homomorphic encryption through CKKS"
+    description: "Efficient implementation of the CKKS homomorphic encryption scheme on CUDA using hierarchical Discrete Galois Transform. Achieves up to 3.6x faster homomorphic multiplication than state-of-the-art."
+    link: "https://github.com/pdroalves/spog-ckks"
+    tags: ["CKKS", "CUDA", "GPU", "Homomorphic Encryption"]
+    year: "2021"
+
+  - title: "SPOG - GPU-accelerated homomorphic encryption through BFV"
     description: "Efficient implementation of the BFV homomorphic encryption scheme on CUDA using hierarchical Discrete Galois Transform. Achieves up to 3.6x faster homomorphic multiplication than state-of-the-art."
-    link: "#"
+    link: "https://github.com/pdroalves/spog-bfv"
     tags: ["BFV", "CUDA", "GPU", "Homomorphic Encryption"]
     year: "2021"
 
+  - title: "AOA"
+    description: "Umbrella repository for GPU-accelerated CKKS homomorphic encryption components: aoa-dgt (Discrete Galois Transform path, GPL-3.0) and aoa-ntt (NTT-based newckks stack, MIT)—CUDA/C++ with NTL/GMP, hierarchical transforms for encrypted polynomial arithmetic."
+    link: "https://github.com/pdroalves/aoa"
+    tags: ["CKKS", "CUDA", "C++", "Homomorphic Encryption", "GPU"]
+    year: "2022"
+
+  - title: "AOA Logistic Regression"
+    description: "C++/CUDA prototype that trains logistic regression on CKKS-encrypted features using the AOA libraries: homomorphic forward/backward passes on GPU, encrypted and plaintext MNIST and tabular runs (e.g. heart disease), scripted batch benchmarks for method comparison."
+    link: "https://github.com/pdroalves/aoa-logistic-regression"
+    tags: ["CKKS", "CUDA", "C++", "Homomorphic Encryption", "Machine Learning"]
+    year: "2020"

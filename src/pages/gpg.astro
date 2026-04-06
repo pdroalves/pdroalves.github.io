@@ -19,7 +19,6 @@ interface GPGData {
   archived?: GPGKey[];
 }
 
-// Get the project root directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '../..');
@@ -34,7 +33,6 @@ try {
   console.error('Error loading gpg.yaml:', e);
 }
 
-// Try to load key files
 function loadKeyFile(filePath: string): string | null {
   try {
     if (filePath.startsWith('/')) {
@@ -54,109 +52,97 @@ const currentKeyContent = gpgData.current?.file ? loadKeyFile(gpgData.current.fi
 ---
 
 <BaseLayout title="GPG Key" description="GPG public key for encrypted communications">
-  <div class="gpg-page">
-    <header class="page-header">
-      <h1>GPG Public Key</h1>
-      <p class="page-description">
-        My GPG public key for encrypted communications. You can import this key to verify my signed messages and send me encrypted emails.
-      </p>
-    </header>
-    
+  <div class="page">
+    <h1>GPG Public Key</h1>
+    <p class="page-desc">
+      My GPG public key for encrypted communications. Import this key to verify my signed messages and send me encrypted emails.
+    </p>
+
     {gpgData.current && (
-      <section class="key-section">
+      <section class="section">
         <h2>Current Key</h2>
-        <div class="key-card">
-          <div class="key-info">
-            <div class="info-row">
-              <span class="info-label">Key ID</span>
-              <code class="info-value">{gpgData.current.keyId}</code>
-            </div>
-            {gpgData.current.fingerprint && (
-              <div class="info-row">
-                <span class="info-label">Fingerprint</span>
-                <div class="fingerprint-row">
-                  <code class="info-value fingerprint">{gpgData.current.fingerprint}</code>
-                  <button class="copy-btn" id="copy-fingerprint" data-value={gpgData.current.fingerprint}>
-                    Copy
-                  </button>
-                </div>
-              </div>
-            )}
-            {gpgData.current.email && (
-              <div class="info-row">
-                <span class="info-label">Email</span>
-                <span class="info-value">{gpgData.current.email}</span>
-              </div>
-            )}
-            {gpgData.current.created && (
-              <div class="info-row">
-                <span class="info-label">Created</span>
-                <span class="info-value">{new Date(gpgData.current.created).toLocaleDateString()}</span>
-              </div>
-            )}
-            {gpgData.current.expires && (
-              <div class="info-row">
-                <span class="info-label">Expires</span>
-                <span class="info-value">{new Date(gpgData.current.expires).toLocaleDateString()}</span>
-              </div>
-            )}
+        <div class="key-info">
+          <div class="info-row">
+            <span class="label">Key ID</span>
+            <code>{gpgData.current.keyId}</code>
           </div>
-          
-          {currentKeyContent ? (
-            <div class="key-content">
-              <details>
-                <summary>View Public Key</summary>
-                <pre><code>{currentKeyContent}</code></pre>
-              </details>
-              <a href={gpgData.current.file} download class="btn btn-primary">
-                Download Key File
-              </a>
+          {gpgData.current.fingerprint && (
+            <div class="info-row">
+              <span class="label">Fingerprint</span>
+              <div class="fingerprint-row">
+                <code class="fingerprint">{gpgData.current.fingerprint}</code>
+                <button class="copy-btn" id="copy-fingerprint" data-value={gpgData.current.fingerprint}>Copy</button>
+              </div>
             </div>
-          ) : (
-            <div class="key-warning">
-              <p>Key file not found. Please ensure the key file exists at <code>{gpgData.current.file}</code></p>
+          )}
+          {gpgData.current.email && (
+            <div class="info-row">
+              <span class="label">Email</span>
+              <span>{gpgData.current.email}</span>
+            </div>
+          )}
+          {gpgData.current.created && (
+            <div class="info-row">
+              <span class="label">Created</span>
+              <span>{new Date(gpgData.current.created).toLocaleDateString()}</span>
+            </div>
+          )}
+          {gpgData.current.expires && (
+            <div class="info-row">
+              <span class="label">Expires</span>
+              <span>{new Date(gpgData.current.expires).toLocaleDateString()}</span>
             </div>
           )}
         </div>
+
+        {currentKeyContent ? (
+          <div class="key-content">
+            <details>
+              <summary>View public key</summary>
+              <pre><code>{currentKeyContent}</code></pre>
+            </details>
+            <a href={gpgData.current.file} download class="download-link">Download key file &darr;</a>
+          </div>
+        ) : (
+          <p class="warning">Key file not found at <code>{gpgData.current.file}</code></p>
+        )}
       </section>
     )}
-    
+
     {gpgData.archived && gpgData.archived.length > 0 && (
-      <section class="key-section">
+      <section class="section">
         <h2>Archived Keys</h2>
-        <p class="section-note">These are previous keys that are no longer in use but are kept for historical reference.</p>
-        {gpgData.archived.map((key, idx) => {
+        <p class="note">Previous keys kept for historical reference.</p>
+        {gpgData.archived.map((key) => {
           const archivedKeyContent = key.file ? loadKeyFile(key.file) : null;
           return (
-            <div class="archived-card">
+            <div class="archived-key">
               <h3>Key {key.keyId}</h3>
               <div class="key-info">
                 {key.fingerprint && (
                   <div class="info-row">
-                    <span class="info-label">Fingerprint</span>
-                    <code class="info-value">{key.fingerprint}</code>
+                    <span class="label">Fingerprint</span>
+                    <code>{key.fingerprint}</code>
                   </div>
                 )}
                 {key.created && (
                   <div class="info-row">
-                    <span class="info-label">Created</span>
-                    <span class="info-value">{new Date(key.created).toLocaleDateString()}</span>
+                    <span class="label">Created</span>
+                    <span>{new Date(key.created).toLocaleDateString()}</span>
                   </div>
                 )}
                 {key.expires && (
                   <div class="info-row">
-                    <span class="info-label">Expired</span>
-                    <span class="info-value">{new Date(key.expires).toLocaleDateString()}</span>
+                    <span class="label">Expired</span>
+                    <span>{new Date(key.expires).toLocaleDateString()}</span>
                   </div>
                 )}
               </div>
               {archivedKeyContent && (
-                <details class="key-content">
-                  <summary>View Key</summary>
+                <details>
+                  <summary>View key</summary>
                   <pre><code>{archivedKeyContent}</code></pre>
-                  <a href={key.file} download class="btn btn-secondary">
-                    Download Key File
-                  </a>
+                  <a href={key.file} download class="download-link">Download &darr;</a>
                 </details>
               )}
             </div>
@@ -164,207 +150,164 @@ const currentKeyContent = gpgData.current?.file ? loadKeyFile(gpgData.current.fi
         })}
       </section>
     )}
-    
-    <section class="key-section instructions">
+
+    <section class="section">
       <h2>How to Import</h2>
       <ol>
         <li>Download the key file above</li>
-        <li>Import it using: <code>gpg --import [key-file]</code></li>
-        <li>Verify the fingerprint matches the one shown above</li>
-        <li>You can now use this key to verify my signatures or send me encrypted emails</li>
+        <li>Import it: <code>gpg --import [key-file]</code></li>
+        <li>Verify the fingerprint matches</li>
+        <li>Use this key to verify my signatures or send encrypted emails</li>
       </ol>
     </section>
   </div>
 </BaseLayout>
 
 <style>
-  .gpg-page {
-    max-width: 800px;
-    margin: 0 auto;
+  .page h1 {
+    margin-bottom: 0.5rem;
   }
 
-  .page-header {
-    text-align: center;
-    margin-bottom: var(--space-2xl);
-  }
-
-  .page-header h1 {
-    margin-bottom: var(--space-md);
-  }
-
-  .page-description {
-    color: var(--color-text-light);
-    font-size: 1.1rem;
-    max-width: 600px;
-    margin: 0 auto;
+  .page-desc {
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
     line-height: 1.7;
   }
-  
-  .key-section {
-    margin-bottom: var(--space-2xl);
+
+  .section {
+    margin-bottom: 2rem;
   }
 
-  .key-section h2 {
-    margin-bottom: var(--space-lg);
+  .section h2 {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .section-note {
-    color: var(--color-text-light);
+  .note {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
     font-style: italic;
-    margin-bottom: var(--space-lg);
-  }
-  
-  .key-card,
-  .archived-card {
-    background: var(--color-background);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-xl);
-    margin-bottom: var(--space-lg);
+    margin-bottom: 1rem;
   }
 
-  .archived-card {
-    border-left: 3px solid var(--color-text-muted);
-  }
-
-  .archived-card h3 {
-    margin-bottom: var(--space-md);
-  }
-  
   .key-info {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
-  
+
   .info-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    align-items: center;
-  }
-
-  .info-label {
-    font-weight: 600;
-    color: var(--color-text-light);
-    min-width: 100px;
+    gap: 0.75rem;
+    align-items: baseline;
     font-size: 0.9rem;
   }
-  
-  .info-value {
-    color: var(--color-text);
+
+  .label {
+    color: var(--color-text-muted);
+    min-width: 6rem;
+    flex-shrink: 0;
+    font-size: 0.85rem;
   }
 
-  .info-value code,
-  code.info-value {
-    background: var(--color-surface);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-sm);
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    font-size: 0.9rem;
-  }
-  
   .fingerprint-row {
     display: flex;
     align-items: center;
-    gap: var(--space-sm);
+    gap: 0.5rem;
     flex-wrap: wrap;
   }
 
   .fingerprint {
     word-break: break-all;
+    font-size: 0.8rem;
+  }
+
+  .copy-btn {
+    background: #f5f5f5;
+    border: 1px solid var(--color-border);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-family: inherit;
+    transition: color 0.15s ease;
+  }
+
+  .copy-btn:hover {
+    color: var(--color-text);
+  }
+
+  .key-content {
+    margin-top: 1rem;
+  }
+
+  details summary {
+    cursor: pointer;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    transition: color 0.15s ease;
+  }
+
+  details summary:hover {
+    color: var(--color-text);
+  }
+
+  details pre {
+    margin: 0.75rem 0;
+    max-height: 250px;
+    overflow-y: auto;
+    font-size: 0.75rem;
+  }
+
+  .download-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .download-link:hover {
+    color: var(--color-text);
+  }
+
+  .warning {
+    color: #b91c1c;
     font-size: 0.85rem;
   }
-  
-  .copy-btn {
-    background: var(--color-surface);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-    padding: 0.35rem 0.75rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all var(--transition-fast);
-  }
-  
-  .copy-btn:hover {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: white;
-  }
-  
-  .key-content {
-    margin-top: var(--space-lg);
+
+  .archived-key {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .key-content summary {
-    cursor: pointer;
-    color: var(--color-text-light);
-    font-weight: 500;
-    padding: var(--space-sm) 0;
-    transition: color var(--transition-fast);
+  .archived-key:last-child {
+    border-bottom: none;
   }
 
-  .key-content summary:hover {
-    color: var(--color-primary);
-  }
-  
-  .key-content pre {
-    margin: var(--space-md) 0;
-    max-height: 300px;
-    overflow-y: auto;
+  .archived-key h3 {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
   }
 
-  .key-content .btn {
-    margin-top: var(--space-md);
-  }
-
-  .key-warning {
-    background: #fef2f2;
-    color: #dc2626;
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-    border: 1px solid #fecaca;
-  }
-
-  .key-warning code {
-    background: rgba(220, 38, 38, 0.1);
-    padding: 0.15rem 0.35rem;
-    border-radius: var(--radius-sm);
-  }
-  
-  .instructions {
-    background: var(--gradient-subtle);
-    padding: var(--space-xl);
-    border-radius: var(--radius-lg);
-  }
-
-  .instructions h2 {
-    margin-bottom: var(--space-lg);
-  }
-
-  .instructions ol {
-    padding-left: var(--space-lg);
+  ol {
+    padding-left: 1.5rem;
     line-height: 2;
-  }
-  
-  .instructions code {
-    background: var(--color-background);
-    padding: 0.2rem 0.5rem;
-    border-radius: var(--radius-sm);
-    font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.9rem;
+    color: var(--color-text-secondary);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 500px) {
     .info-row {
       flex-direction: column;
-      align-items: flex-start;
+      gap: 0.15rem;
     }
 
-    .info-label {
+    .label {
       min-width: auto;
     }
   }
