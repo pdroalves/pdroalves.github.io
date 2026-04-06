@@ -92,7 +92,7 @@ Edit `src/content/talks.yaml` to add or update talks.
 
 ### Articles
 
-Create new articles by adding Markdown files to `src/content/articles/`:
+Create new articles by adding Markdown files to `src/content/articles/`. See `src/content/articles/git-by-example.md` for a full example.
 
 ```markdown
 ---

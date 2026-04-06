@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { formatBlogDateShort } from '../../utils/blogDate';
+
+const posts = (await getCollection('articles'))
+  .filter(post => post.data.date)
+  .sort((a, b) => {
+    const dateA = new Date(a.data.date!).getTime();
+    const dateB = new Date(b.data.date!).getTime();
+    return dateB - dateA;
+  });
+---
+
+<BaseLayout title="Blog" description="Articles and thoughts">
+  <div class="page">
+    <h1>Blog</h1>
+
+    {posts.length > 0 ? (
+      <div class="post-list">
+        {posts.map((post) => (
+          <a href={`/blog/${post.slug}`} class="post-row">
+            <span class="post-title">{post.data.title}</span>
+            {post.data.description && (
+              <span class="post-desc">{post.data.description}</span>
+            )}
+            {post.data.date && (
+              <span class="post-date">{formatBlogDateShort(post.data.date)}</span>
+            )}
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="empty">No posts yet.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .page h1 {
+    margin-bottom: 1.5rem;
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0.15rem 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: opacity 0.15s ease;
+  }
+
+  .post-row:first-child {
+    padding-top: 0;
+  }
+
+  .post-row:last-child {
+    border-bottom: none;
+  }
+
+  .post-row:hover {
+    opacity: 0.7;
+  }
+
+  .post-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .post-desc {
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .post-date {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    grid-column: 2;
+    grid-row: 1;
+    white-space: nowrap;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 500px) {
+    .post-row {
+      grid-template-columns: 1fr;
+    }
+
+    .post-date {
+      grid-column: 1;
+      grid-row: 3;
+    }
+  }
+</style>

@@ -78,7 +78,7 @@ The site is ready for GitHub Pages deployment:
 
 4. **Add Articles**: 
    - Create Markdown files in `src/content/articles/`
-   - See `src/content/articles/example.md` for format
+   - See `src/content/articles/git-by-example.md` for format
 
 5. **Test Locally** (requires Node.js 18.20.8+ or 20+):
    ```bash
