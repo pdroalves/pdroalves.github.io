@@ -49,6 +49,8 @@ conferences:
     links:
       - type: "paper"
         url: "https://pdroalves.github.io/files/publications/2011-sbgf-tracamento-raios.pdf"
+      - type: "bibtex"
+        url: "https://pdroalves.github.io/files/publications/2011-sbgf-tracamento-raios.bib"
 
 journal:
   - year: "2024"
@@ -57,7 +59,7 @@ journal:
     abstract: "This paper presents a privacy-preserving solution for smart meter data analytics using lattice-based homomorphic encryption. The work enables secure computation over encrypted smart meter data while preserving user privacy, allowing statistical analysis and machine learning operations to be performed on encrypted data without decryption."
     links:
       - type: "journal"
-        url: "https://academic.oup.com/comjnl/article-abstract/67/5/1687/7280723"
+        url: "https://doi.org/10.1093/comjnl/bxad093"
       - type: "scholar"
         url: "https://scholar.google.com.br/citations?view_op=view_citation&hl=pt-BR&user=-m1Mj1YAAAAJ&citation_for_view=-m1Mj1YAAAAJ:Se3iqnhoufwC"
       - type: "bibtex"

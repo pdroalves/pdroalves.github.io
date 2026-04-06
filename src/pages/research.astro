@@ -18,6 +18,7 @@ interface Publication {
   institution?: string;
   type?: string;
   links?: Array<{type: string; url: string}>;
+  bibtexInline?: string;
 }
 
 interface Talk {
@@ -63,12 +64,42 @@ try {
   console.error('Error loading talks.yaml:', e);
 }
 
+function readLocalBibtex(publicationsBaseUrl: string): string | undefined {
+  const m = publicationsBaseUrl.match(/\/files\/publications\/([^/]+\.bib)$/);
+  if (!m) return undefined;
+  const fp = path.join(projectRoot, 'public', 'files', 'publications', m[1]);
+  try {
+    if (fs.existsSync(fp)) return fs.readFileSync(fp, 'utf-8').trim();
+  } catch {
+    /* ignore */
+  }
+  return undefined;
+}
+
+function getLinkLabel(link: { type: string; url: string }): string {
+  const u = link.url.toLowerCase();
+  if (link.type === 'github') return 'GitHub';
+  if (link.type === 'scholar') return 'Google Scholar';
+  if (u.endsWith('.pdf')) return 'PDF';
+  if (link.type === 'eprint') return 'ePrint';
+  if (link.type === 'journal') return 'Journal';
+  if (link.type === 'paper') return 'Paper';
+  if (link.type === 'thesis') return 'Thesis';
+  return link.type;
+}
+
 const allPublications = [
   ...publications.conferences.map(p => ({ ...p, category: 'Conference' })),
   ...publications.journal.map(p => ({ ...p, category: 'Journal' })),
   ...publications.preprints.map(p => ({ ...p, category: 'Preprint' })),
   ...publications.thesis.map(p => ({ ...p, category: 'Thesis' })),
-].sort((a, b) => parseInt(b.year) - parseInt(a.year));
+]
+  .sort((a, b) => parseInt(b.year) - parseInt(a.year))
+  .map((p) => {
+    const bib = p.links?.find((l) => l.type === 'bibtex');
+    const bibtexInline = bib?.url ? readLocalBibtex(bib.url) : undefined;
+    return { ...p, bibtexInline };
+  });
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -93,7 +124,9 @@ function formatDate(dateStr: string): string {
     <!-- Publications -->
     <section class="tab-content active" id="publications">
       {allPublications.map((pub) => {
-        const paperLink = pub.links?.find((l: any) => l.type !== 'bibtex' && l.url !== '#');
+        const nonBib = pub.links?.filter((l: any) => l.type !== 'bibtex' && l.url !== '#') ?? [];
+        const paperLink =
+          nonBib.find((l: any) => l.url.toLowerCase().endsWith('.pdf')) ?? nonBib[0];
         const bibtexLink = pub.links?.find((l: any) => l.type === 'bibtex' && l.url !== '#');
         return (
           <article class="pub">
@@ -121,18 +154,28 @@ function formatDate(dateStr: string): string {
                 {pub.links.map((link) => (
                   link.url !== '#' && link.type !== 'bibtex' && (
                     <a href={link.url} target="_blank" rel="noopener noreferrer">
-                      {link.type === 'eprint' ? 'ePrint' :
-                       link.type === 'journal' ? 'Journal' :
-                       link.type === 'conference' ? 'Conference' :
-                       link.type === 'paper' ? 'Paper' :
-                       link.type === 'scholar' ? 'Scholar' :
-                       link.type === 'github' ? 'GitHub' :
-                       link.type === 'thesis' ? 'Thesis' : link.type}
+                      {getLinkLabel(link)}
                     </a>
                   )
                 ))}
                 {bibtexLink && (
-                  <a href={bibtexLink.url} target="_blank" rel="noopener noreferrer" download>BibTeX</a>
+                  <span class="pub-bibtex">
+                    {pub.bibtexInline ? (
+                      <>
+                        <textarea class="pub-bib-source" hidden readonly aria-hidden="true">{pub.bibtexInline}</textarea>
+                        <button
+                          type="button"
+                          class="pub-bib-open"
+                          data-open-bib
+                          data-pub-title={pub.title}
+                        >
+                          BibTeX
+                        </button>
+                      </>
+                    ) : (
+                      <a href={bibtexLink.url} target="_blank" rel="noopener noreferrer">BibTeX</a>
+                    )}
+                  </span>
                 )}
               </div>
             )}
@@ -158,6 +201,29 @@ function formatDate(dateStr: string): string {
       ))}
     </section>
   </div>
+
+  <dialog class="bibtex-dialog" id="bibtex-dialog" aria-labelledby="bibtex-dialog-title" tabindex="-1">
+    <div class="bibtex-dialog-panel">
+      <header class="bibtex-dialog-header">
+        <div>
+          <h2 id="bibtex-dialog-title" class="bibtex-dialog-title">BibTeX</h2>
+          <p id="bibtex-dialog-paper" class="bibtex-dialog-paper" hidden></p>
+        </div>
+        <div class="bibtex-dialog-header-actions">
+          <button
+            type="button"
+            class="bibtex-dialog-copy"
+            id="bibtex-dialog-copy"
+            aria-label="Copy BibTeX to clipboard"
+          >
+            Copy BibTeX
+          </button>
+          <button type="button" class="bibtex-dialog-close" aria-label="Close">&times;</button>
+        </div>
+      </header>
+      <pre class="bibtex-dialog-pre"><code id="bibtex-dialog-code" class="bibtex-dialog-code"></code></pre>
+    </div>
+  </dialog>
 </BaseLayout>
 
 <style>
@@ -317,6 +383,145 @@ function formatDate(dateStr: string): string {
     color: var(--color-text);
   }
 
+  .pub-bibtex {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pub-bib-open {
+    font-size: 0.8rem;
+    font-family: inherit;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .pub-bib-open:hover {
+    color: var(--color-text);
+  }
+
+  /* BibTeX dialog (Scholar-style overlay) — fixed center (viewport) */
+  .bibtex-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    max-width: calc(100vw - 2rem);
+    width: min(40rem, 100%);
+    max-height: min(85vh, 36rem);
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg, #fff);
+    color: var(--color-text);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+  }
+
+  .bibtex-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+  }
+
+  .bibtex-dialog-panel {
+    display: flex;
+    flex-direction: column;
+    max-height: min(70vh, 32rem);
+  }
+
+  .bibtex-dialog-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1rem 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bibtex-dialog-header-actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .bibtex-dialog-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .bibtex-dialog-paper {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+  }
+
+  .bibtex-dialog-close {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .bibtex-dialog-close:hover {
+    color: var(--color-text);
+    background: var(--color-border-light);
+  }
+
+  .bibtex-dialog-pre {
+    margin: 0;
+    padding: 1rem;
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: var(--color-bg-secondary, #f6f6f6);
+    border-radius: 0;
+  }
+
+  .bibtex-dialog-code {
+    font-family: inherit;
+  }
+
+  .bibtex-dialog-copy {
+    font-size: 0.8rem;
+    font-family: inherit;
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-bg, #fff);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+
+  .bibtex-dialog-copy:hover {
+    border-color: var(--color-text-muted);
+    background: var(--color-border-light);
+  }
+
   /* Talks */
   .talk {
     padding: 1rem 0;
@@ -388,5 +593,58 @@ function formatDate(dateStr: string): string {
         }
       });
     });
+  });
+
+  const bibDialog = document.getElementById('bibtex-dialog');
+  const bibCode = document.getElementById('bibtex-dialog-code');
+  const bibPaper = document.getElementById('bibtex-dialog-paper');
+  const bibCopyBtn = document.getElementById('bibtex-dialog-copy');
+  const bibCloseBtn = bibDialog?.querySelector('.bibtex-dialog-close');
+
+  document.querySelectorAll('[data-open-bib]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const wrap = btn.closest('.pub-bibtex');
+      const ta = wrap?.querySelector('.pub-bib-source');
+      if (!ta || !(ta instanceof HTMLTextAreaElement) || !bibCode || !bibDialog) return;
+      bibCode.textContent = ta.value;
+      const title = btn.getAttribute('data-pub-title');
+      if (bibPaper && title) {
+        bibPaper.textContent = title;
+        bibPaper.hidden = false;
+      } else if (bibPaper) {
+        bibPaper.textContent = '';
+        bibPaper.hidden = true;
+      }
+      bibDialog.showModal();
+      bibDialog.focus();
+    });
+  });
+
+  bibCloseBtn?.addEventListener('click', () => bibDialog?.close());
+
+  bibDialog?.addEventListener('click', (e) => {
+    if (e.target === bibDialog) bibDialog.close();
+  });
+
+  bibCopyBtn?.addEventListener('click', async () => {
+    const text = bibCode?.textContent ?? '';
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      const prev = bibCopyBtn.textContent;
+      bibCopyBtn.textContent = 'Copied';
+      setTimeout(() => { bibCopyBtn.textContent = prev; }, 2000);
+    } catch {
+      const range = document.createRange();
+      if (bibCode) {
+        range.selectNodeContents(bibCode);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+      try {
+        document.execCommand('copy');
+      } catch { /* ignore */ }
+    }
   });
 </script>

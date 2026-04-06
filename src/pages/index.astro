@@ -145,7 +145,7 @@ const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
 
   <!-- Recent Publications -->
   {featuredPublications.length > 0 && (
-    <section class="section">
+    <section class="section section--narrow">
       <h2>Recent publications</h2>
       <div class="pub-list">
         {featuredPublications.map((pub) => {
@@ -171,7 +171,7 @@ const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
 
   <!-- Featured Projects -->
   {featuredProjects.length > 0 && (
-    <section class="section">
+    <section class="section section--narrow">
       <h2>Projects</h2>
       <div class="project-list">
         {featuredProjects.map((project) => (
@@ -231,6 +231,7 @@ const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
     color: var(--color-text-secondary);
     line-height: 1.75;
     margin-bottom: 1rem;
+    text-align: justify;
   }
 
   .about :global(h1) {
@@ -266,6 +267,19 @@ const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
   /* Sections */
   .section {
     margin-bottom: 2.5rem;
+  }
+
+  /* Narrower than full main; centered in the column */
+  .section--narrow {
+    max-width: min(48rem, 100%);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+  }
+
+  .section--narrow h2,
+  .section--narrow .see-all {
+    text-align: start;
   }
 
   .section h2 {
