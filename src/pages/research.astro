@@ -418,9 +418,9 @@ function formatDate(dateStr: string): string {
     padding: 0;
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    background: var(--color-bg, #fff);
+    background: var(--color-bg);
     color: var(--color-text);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 40px var(--color-shadow);
     overflow: hidden;
   }
 
@@ -496,7 +496,7 @@ function formatDate(dateStr: string): string {
     line-height: 1.5;
     white-space: pre-wrap;
     word-break: break-word;
-    background: var(--color-bg-secondary, #f6f6f6);
+    background: var(--color-bg-secondary);
     border-radius: 0;
   }
 
@@ -511,7 +511,7 @@ function formatDate(dateStr: string): string {
     padding: 0.35rem 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: 4px;
-    background: var(--color-bg, #fff);
+    background: var(--color-bg);
     color: var(--color-text);
     cursor: pointer;
     transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
