@@ -14,7 +14,10 @@ const posts = (await getCollection('articles'))
 
 <BaseLayout title="Blog" description="Articles and thoughts">
   <div class="page">
-    <h1>Blog</h1>
+    <div class="page-header">
+      <h1>Blog</h1>
+      <a href="/rss.xml" class="rss-link" target="_blank" rel="noopener">RSS</a>
+    </div>
 
     {posts.length > 0 ? (
       <div class="post-list">
@@ -37,8 +40,26 @@ const posts = (await getCollection('articles'))
 </BaseLayout>
 
 <style>
-  .page h1 {
+  .page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
     margin-bottom: 1.5rem;
+  }
+
+  .page-header h1 {
+    margin-bottom: 0;
+  }
+
+  .rss-link {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .rss-link:hover {
+    color: var(--color-text);
   }
 
   .post-list {

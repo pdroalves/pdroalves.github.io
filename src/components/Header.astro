@@ -131,19 +131,27 @@ const navBrand = siteConfig.author;
     border-color: var(--color-text-muted);
   }
 
-  :global([data-theme="light"]) .icon-sun,
-  :global(:not([data-theme])) .icon-sun {
-    display: none;
-  }
-
-  :global([data-theme="dark"]) .icon-moon {
-    display: none;
-  }
 
   @media (max-width: 600px) {
     .topbar-inner {
       padding: 0.55rem 1rem;
     }
+  }
+</style>
+
+<style is:global>
+  .theme-toggle .icon-sun,
+  .theme-toggle .icon-moon {
+    display: none;
+  }
+
+  [data-theme="dark"] .theme-toggle .icon-sun {
+    display: block;
+  }
+
+  [data-theme="light"] .theme-toggle .icon-moon,
+  html:not([data-theme]) .theme-toggle .icon-moon {
+    display: block;
   }
 </style>
 
