@@ -3,11 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.resolve(__dirname, '../..');
+const projectRoot = process.cwd();
 
 interface Publication {
   year: string;
