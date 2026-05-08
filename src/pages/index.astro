@@ -2,8 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProfilePicture from '../components/ProfilePicture.astro';
 import { siteConfig } from '../config';
-// import { formatBlogDateShort } from '../utils/blogDate';
-// import { getCollection } from 'astro:content';
+import { formatBlogDateShort } from '../utils/blogDate';
+import { getCollection } from 'astro:content';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
@@ -81,11 +81,10 @@ try {
   console.error('Error loading portfolio.yaml:', e);
 }
 
-// Load recent blog posts (3 most recent); hidden on home until there is more to show
-// const recentPosts = (await getCollection('articles'))
-//   .filter(post => post.data.date)
-//   .sort((a, b) => new Date(b.data.date!).getTime() - new Date(a.data.date!).getTime())
-//   .slice(0, 3);
+const recentPosts = (await getCollection('articles'))
+  .filter(post => post.data.date)
+  .sort((a, b) => new Date(b.data.date!).getTime() - new Date(a.data.date!).getTime())
+  .slice(0, 3);
 
 const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
 ---
@@ -111,7 +110,6 @@ const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
     </div>
   </section>
 
-  {/* Recent Posts: hidden on home until there is more to show; uncomment frontmatter + imports too
   {recentPosts.length > 0 && (
     <section class="section">
       <h2>Recent posts</h2>
@@ -138,7 +136,6 @@ const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
       <a href="/blog" class="see-all">See all posts &rarr;</a>
     </section>
   )}
-  */}
 
   <!-- Recent Publications -->
   {featuredPublications.length > 0 && (
@@ -322,7 +319,7 @@ const githubLink = socialLinks.find(l => l.icon.toLowerCase() === 'github');
     font-weight: 600;
     font-size: 0.8rem;
     color: var(--color-text-secondary);
-    background: #fafafa;
+    background: var(--color-bg-secondary);
   }
 
   .post-table tbody td:first-child {
