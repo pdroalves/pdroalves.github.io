@@ -9,10 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.4",
     "@astrojs/rss": "^4.0.19",
     "astro": "^7.2.8",
     "devalue": "5.9.4",
-    "gray-matter": "^4.0.3",
     "js-yaml": "^4.3.2",
     "markdown-it": "^14.3.1",
     "remark-gfm": "^4.0.1"
