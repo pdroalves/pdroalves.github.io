@@ -14,7 +14,7 @@
     "astro": "^7.2.8",
     "devalue": "5.9.4",
     "js-yaml": "^4.3.2",
-    "markdown-it": "^14.3.1",
+    "markdown-it": "^14.3.3",
     "remark-gfm": "^4.0.1"
   }
 }
